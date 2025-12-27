@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Shop - Chatbot Ẩn/Hiện</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">GEMINI<span>SHOP</span></div>
+    </header>
+
+    <main class="container">
+        <h1>Trang chủ cửa hàng</h1>
+        <p>Nhấn vào biểu tượng tin nhắn ở góc dưới bên phải để trò chuyện.</p>
+    </main>
+
+    <div id="chat-launcher">
+        <i class="fa-solid fa-comments"></i>
+    </div>
+
+    <div id="chatbot-container" class="hidden">
+        <div class="chat-header">
+            <div class="bot-info">
+                <div class="online-dot"></div>
+                <span>Hỗ trợ AI</span>
+            </div>
+            <button id="close-chat"><i class="fa-solid fa-minus"></i></button>
+        </div>
+
+        <div id="chat-box" class="chat-body">
+            <div class="message bot">Chào bạn! Tôi có thể giúp gì cho bạn không?</div>
+        </div>
+
+        <div class="chat-footer">
+            <input type="text" id="user-input" placeholder="Nhập câu hỏi...">
+            <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
