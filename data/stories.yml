@@ -27,4 +27,36 @@ stories:
   - action: utter_cheer_up
   - action: utter_did_that_help
   - intent: deny
+  - action: utter_ask_rephrase
+
+- story: khách hàng buồn
+  steps:
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+
+- story: khách xác nhận thông tin hữu ích 1
+  steps:
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+- story: Xác nhận thông tin hữu ích (General Affirm)
+  steps:
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_confirm_received
+  - action: utter_happy
+
+- story: khách không hài lòng với câu trả lời
+  steps:
+  - action: utter_did_that_help
+  - intent: deny
+  - action: utter_ask_rephrase
+
+- story: Chào hỏi và kết thúc nhanh
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: goodbye
   - action: utter_goodbye

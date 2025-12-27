@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const sendBtn = document.getElementById("send-btn");
     const userInput = document.getElementById("user-input");
     const chatBox = document.getElementById("chat-box");
+    // Thay URL này bằng link Codespace của bạn nếu chạy trên GitHub
+    const RASA_API_URL = "https://ideal-trout-r7p69j7v5gwf594w-5005.app.github.dev/webhooks/rest/webhook";
 
     // 1. CHỨC NĂNG ẨN/HIỆN
     launcher.addEventListener("click", () => {
@@ -36,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         userInput.value = "";
 
         try {
-            const response = await fetch("http://localhost:5005/webhooks/rest/webhook", {
+            const response = await fetch("https://ideal-trout-r7p69j7v5gwf594w-5005.app.github.dev/webhooks/rest/webhook", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ sender: "user_web", message: message }),

@@ -11,3 +11,29 @@ rules:
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
+
+- rule: Phản hồi khi khách chào hỏi
+  steps:
+  - intent: greet
+  - action: utter_greet
+
+- rule: An ủi khi khách hàng có tâm trạng tệ
+  steps:
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help    
+
+- rule: Chia sẻ niềm vui với khách
+  steps:
+  - intent: mood_great
+  - action: utter_happy    
+
+- rule: Yêu cầu khách diễn đạt lại khi không hiểu
+  steps:
+  - intent: nlu_fallback
+  - action: utter_please_rephrase
+
+- rule: Thông báo khi câu hỏi nằm ngoài phạm vi hỗ trợ
+  steps:
+  - intent: out_of_scope
+  - action: utter_out_of_scope      

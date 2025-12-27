@@ -16,6 +16,25 @@ nlu:
     - goodmorning
     - goodevening
     - good afternoon
+    - chào bạn
+    - xin chào
+    - hi shop
+    - hello
+    - cho mình hỏi tí
+    - ad ơi   
+    - shop ơi
+    - shop có đó không
+    - cho mình hỏi chút
+    - tư vấn giúp mình với
+    - chào gemini shop
+    - alo shop
+    - có ai trực không ạ
+    - mình cần hỗ trợ
+    - chao ban
+    - xin chao
+    - shop oi
+    - hi sop
+    - s0p oi     
 
 - intent: goodbye
   examples: |
@@ -29,6 +48,19 @@ nlu:
     - see you around
     - bye bye
     - see you later
+    - tạm biệt
+    - chào nhé
+    - hẹn gặp lại
+    - bye shop
+    - bái bai
+    - mình đi đây
+    - cảm ơn shop nhé
+    - chúc shop đắt hàng
+    - thôi mình chào nhé
+    - tam biet
+    - hen gap lai
+    - cam on shop nhe
+    - bai bai shop
 
 - intent: affirm
   examples: |
@@ -38,6 +70,35 @@ nlu:
     - of course
     - that sounds good
     - correct
+    - có
+    - đúng rồi
+    - vâng
+    - dạ đúng
+    - ok
+    - okay
+    - chuẩn luôn
+    - chính xác
+    - nhất trí
+    - đồng ý
+    - được ạ
+    - ok shop
+    - được nhé
+    - triển luôn đi
+    - chốt nhé
+    - chuẩn cơm mẹ nấu rồi
+    - okela
+    - ok nha
+    - dạ vâng ạ
+    - chuẩn ạ
+    - đúng ý mình rồi
+    - yup
+    - yes
+    - dung roi
+    - đúng rồi
+    - vang
+    - dong y
+    - duoc nhe
+    - ok lah
 
 - intent: deny
   examples: |
@@ -48,6 +109,33 @@ nlu:
     - don't like that
     - no way
     - not really
+    - không
+    - chưa
+    - hông
+    - ko
+    - k
+    - chưa được
+    - không phải
+    - sai rồi
+    - nhầm rồi shop ơi
+    - không đúng
+    - chưa đúng ý mình
+    - đâu có
+    - thôi bỏ đi
+    - không cần đâu
+    - dạ không ạ
+    - chưa ạ
+    - mình không muốn
+    - no
+    - nope
+    - not really
+    - khong
+    - ko phai
+    - sai roi
+    - nham roi
+    - khong can dau
+    - hơm
+    - no thanks
 
 - intent: mood_great
   examples: |
@@ -65,6 +153,29 @@ nlu:
     - so so perfect
     - so good
     - so perfect
+    - mình rất vui
+    - hôm nay tuyệt vời
+    - đang cảm thấy rất tốt
+    - khỏe lắm shop ơi
+    - quá đỉnh luôn
+    - cực kỳ hạnh phúc
+    - mọi thứ đều ổn
+    - không thể tốt hơn
+    - đang sướng đây
+    - ổn áp lắm
+    - ngon lành cành đào
+    - quá là okela luôn
+    - vui như tết
+    - tuyệt lắm
+    - great
+    - amazing
+    - perfect
+    - i'm happy
+    - i'm feeling good
+    - vui lam
+    - dang rat tot
+    - moi thu on
+    - okela
 
 - intent: mood_unhappy
   examples: |
@@ -82,6 +193,31 @@ nlu:
     - extremly sad
     - so saad
     - so sad
+    - mình đang buồn
+    - hôm nay tệ quá
+    - cảm thấy không ổn chút nào
+    - đang bị stress
+    - áp lực quá shop ơi
+    - mệt mỏi quá
+    - thấy nản nản sao ấy
+    - chán đời quá
+    - mình đang thất tình
+    - cảm thấy cô đơn
+    - buồn vcl
+    - chán lắm
+    - không vui
+    - đang bực mình
+    - sad
+    - so sad
+    - i'm feel bad
+    - not good
+    - my day was terrible
+    - buồn lắm
+    - dang buon
+    - met moi
+    - ap luc qua
+    - chan qua
+    - khong on
 
 - intent: bot_challenge
   examples: |
@@ -89,3 +225,35 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+    - bạn là ai?
+    - bạn có phải là bot không?
+    - mình đang nói chuyện với người hay máy?
+    - ai đó?
+    - are you a bot?
+    - are you human?
+    - bạn là robot à?
+    - cho gặp người thật đi
+    - đây là trả lời tự động đúng không?
+    - mày là ai?
+    - bot à?
+    - người hay máy thế shop?
+    - ai đang trực chat vậy?
+    - ban la ai
+    - ban la robot a
+    - bot dung khong
+    - cho gap nguoi that
+
+- intent: out_of_scope
+  examples: |
+    - thời tiết hôm nay thế nào?
+    - 1 cộng 1 bằng mấy?
+    - kể chuyện cười đi
+    - bạn có người yêu chưa?
+    - ai là tổng thống?
+    - hát cho mình nghe một bài
+    - hôm nay nên ăn gì nhỉ?
+    - đá bóng mấy giờ?
+    - cậu có biết nấu ăn không?
+    - thoi tiet hom nay
+    - ke chuyen cuoi di
+

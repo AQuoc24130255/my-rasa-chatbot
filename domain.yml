@@ -8,26 +8,103 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
+  - nlu_fallback
+  - out_of_scope
 
 responses:
   utter_greet:
-  - text: "Hey! How are you?"
+  # Nhóm thân thiện, nhiệt tình
+  - text: "Chào bạn! Gemini Shop rất vui được hỗ trợ bạn. Hôm nay bạn cần tìm gì thế?"
+  - text: "Hê lô! Chúc bạn một ngày mới tràn đầy năng lượng. Shop có thể giúp gì cho bạn đây?"
+  - text: "Dạ shop nghe đây ạ! Bạn cần tư vấn về sản phẩm hay check giá ạ?"
+    # Nhóm chuyên nghiệp, lịch sự
+  - text: "Xin chào! Cảm ơn bạn đã quan tâm đến Gemini Shop. Chúng tôi có thể giúp gì cho quý khách?"
+  - text: "Chào mừng bạn đến với Gemini Shop. Rất vui được phục vụ bạn!"   
+    # Nhóm ngắn gọn, nhanh chóng
+  - text: "Chào bạn nhé! Cần shop tư vấn gì cứ nhắn tin nha."
+  - text: "Hi! Shop đang online đây, bạn cần hỏi gì cứ thoải mái nhé!"    
+    # Nhóm gợi ý hành động (Call to action)
+  - text: "Chào bạn! Hiện shop đang có nhiều mẫu áo mới về, bạn có muốn xem qua không?"
+  - text: "Xin chào! Đừng quên hỏi shop về chương trình khuyến mãi hôm nay nhé!"
 
   utter_cheer_up:
-  - text: "Here is something to cheer you up:"
+  - text: "Đây là một điều có thể giúp bạn vui lên:"
     image: "https://i.imgur.com/nGF1K8f.jpg"
+  # Nhóm an ủi nhẹ nhàng
+  - text: "Đừng buồn nữa nhé, mọi chuyện rồi sẽ ổn thôi mà. Shop luôn ở đây đồng hành cùng bạn! ❤️"
+  - text: "Gửi bạn một cái ôm thật chặt từ Gemini Shop nhé! 🫂 Cười lên một cái nào."   
+    # Nhóm hướng ngoại, khích lệ
+  - text: "Nỗi buồn sẽ qua đi nhanh thôi! Hay là mình lướt xem vài mẫu áo mới tại shop để thay đổi tâm trạng nhé? ✨"
+  - text: "Mạnh mẽ lên bạn ơi! Bạn xứng đáng với những điều tốt đẹp nhất."
+    # Nhóm sử dụng hình ảnh/GIF (Giúp khách hàng vui vẻ hơn)
+  - text: "Tặng bạn một tấm hình dễ thương nè, hy vọng nó làm bạn mỉm cười!"
+    image: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueW9ueWZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7abKhOpuMcmLjdcI/giphy.gif"    
+    # Nhóm ngắn gọn, tinh tế
+  - text: "Shop ở đây để lắng nghe bạn. Đừng quá lo lắng nhé!"
+  - text: "Hít một hơi thật sâu nào! Mọi thứ sẽ tốt đẹp hơn vào ngày mai."
 
   utter_did_that_help:
-  - text: "Did that help you?"
+  # Nhóm thân thiện, quan tâm
+  - text: "Điều này có giúp bạn cảm thấy khá hơn chút nào không?"
+  - text: "Bạn đã thấy ổn hơn chưa nè? Shop hy vọng là có ích cho bạn!"    
+    # Nhóm ngắn gọn, trực tiếp
+  - text: "Thông tin này có giúp ích cho bạn không?"
+  - text: "Bạn thấy câu trả lời này thế nào, có ổn không ạ?"    
+    # Nhóm chuyên nghiệp
+  - text: "Dạ, không biết thông tin shop vừa cung cấp có giải quyết được vấn đề của bạn không?"
+  - text: "Gemini Shop hy vọng phản hồi vừa rồi đã giúp ích cho bạn. Đúng không ạ?"
 
   utter_happy:
-  - text: "Great, carry on!"
+  # Nhóm hào hứng, vui vẻ
+  - text: "Tuyệt quá! Nghe bạn nói vậy shop cũng thấy vui lây nè. 😊"
+  - text: "Yeahhh! Rất vui vì đã giúp ích được cho bạn. Bạn cần gì cứ nhắn shop nha!"
+  - text: "Quá tuyệt vời! Chúc bạn một ngày mua sắm thật ưng ý tại Gemini Shop nhé. ✨"    
+    # Nhóm chuyên nghiệp, tận tâm
+  - text: "Dạ, đó là niềm vinh dự của shop khi được hỗ trợ bạn ạ!"
+  - text: "Rất vui khi thông tin của shop khiến bạn hài lòng. Cảm ơn bạn đã tin tưởng Gemini Shop."    
+    # Nhóm gợi ý hành động tiếp theo
+  - text: "Vui quá đi! Giờ bạn có muốn xem thêm các mẫu áo thun mới về không ạ?"
+  - text: "Hì hì, cảm ơn bạn nhé! Bạn cần shop tư vấn gì thêm về size số hay giá cả không?"
 
   utter_goodbye:
-  - text: "Bye"
+  - text: "Tạm biệt bạn! Hẹn gặp lại bạn sớm nhất tại Gemini Shop nhé."
+  - text: "Chào tạm biệt! Chúc bạn một ngày tốt lành."
+  - text: "Gemini Shop cảm ơn bạn. Hy vọng sớm được phục vụ bạn lần tới!"
+  - text: "Bái bai! Nếu cần hỗ trợ thêm, đừng ngần ngại nhắn tin cho shop nha."
+
+  utter_confirm_received:
+  - text: "Dạ, shop đã ghi nhận ý kiến của bạn ạ! 😊"
+  - text: "Tuyệt vời! Để shop thực hiện ngay đây."
+  - text: "Vâng ạ, cảm ơn bạn đã xác nhận với shop nhé."
+  - text: "Nhất trí luôn! Bạn cần shop hỗ trợ gì thêm không?"
+  
+  utter_ask_rephrase:
+  - text: "Rất tiếc vì chưa giúp được bạn. Bạn có thể mô tả chi tiết hơn yêu cầu được không ạ? Shop sẽ cố gắng hết sức!"
+  - text: "Dạ, shop hiểu rồi. Có vẻ shop đang nhầm lẫn chút xíu. Bạn muốn hỏi về sản phẩm khác hay cần tư vấn size ạ?"
+  - text: "Xin lỗi bạn nhé! Bạn hãy thử nói lại ý của mình theo cách khác để shop dễ hỗ trợ hơn nha."
 
   utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
+  # Nhóm trực diện, trung thực
+  - text: "Mình là trợ lý ảo thông minh của Gemini Shop! 🤖 Rất vui được hỗ trợ bạn."
+  - text: "Dạ, em là chatbot tự động của cửa hàng. Em có thể giúp bạn check giá và tìm sản phẩm nhanh chóng đấy!"    
+    # Nhóm thân thiện, hài hước
+  - text: "Mình là robot nhưng trái tim mình luôn hướng về khách hàng của Gemini Shop! ❤️ Bạn cần mình giúp gì nào?"
+  - text: "Em là AI 24/7 của shop đây ạ. Tuy không phải người thật nhưng em hứa sẽ tư vấn nhiệt tình nhất có thể! 🦾"   
+    # Nhóm tập trung vào năng lực (Gợi ý khách hàng đặt câu hỏi)
+  - text: "Mình là chatbot Gemini! Mình biết rất nhiều về các loại áo thun và quần jean. Bạn muốn hỏi giá sản phẩm nào không?"
+  - text: "Chào bạn! Mình là nhân viên ảo của shop. Mình có thể giúp bạn tìm mã giảm giá hoặc kiểm tra đơn hàng đó!"
+
+  utter_please_rephrase:
+  - text: "Xin lỗi, Gemini Shop chưa hiểu ý bạn lắm. Bạn có thể nói rõ hơn được không?"
+  - text: "Dạ, phần này shop chưa rõ. Bạn vui lòng diễn đạt lại giúp shop nhé!"
+
+  utter_out_of_scope:
+  - text: "Dạ, hiện tại Gemini Shop chỉ hỗ trợ tư vấn về quần áo và đơn hàng thôi ạ. Mong bạn thông cảm nhé!"
+  - text: "Xin lỗi, vấn đề này nằm ngoài khả năng giải đáp của shop rồi ạ."
+
+  utter_default:
+  - text: "Xin lỗi, Gemini Shop chưa hiểu ý bạn lắm. Bạn có thể nói rõ hơn được không?"
+  - text: "Dạ, mục này shop chưa rõ. Bạn cần tư vấn về giá hay xem sản phẩm ạ?"
 
 session_config:
   session_expiration_time: 60
