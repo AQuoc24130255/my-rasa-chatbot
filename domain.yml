@@ -10,6 +10,17 @@ intents:
   - bot_challenge
   - nlu_fallback
   - out_of_scope
+  - ask_price
+entities:
+  - product_name # <-- Khai báo để Bot nhận diện "áo thun", "quần jean"
+
+slots:
+  product_name: # <-- Lưu trữ tên sản phẩm khách hỏi để gửi cho MySQL
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: product_name
 
 responses:
   utter_greet:
@@ -94,6 +105,8 @@ responses:
   - text: "Mình là chatbot Gemini! Mình biết rất nhiều về các loại áo thun và quần jean. Bạn muốn hỏi giá sản phẩm nào không?"
   - text: "Chào bạn! Mình là nhân viên ảo của shop. Mình có thể giúp bạn tìm mã giảm giá hoặc kiểm tra đơn hàng đó!"
 
+
+
   utter_please_rephrase:
   - text: "Xin lỗi, Gemini Shop chưa hiểu ý bạn lắm. Bạn có thể nói rõ hơn được không?"
   - text: "Dạ, phần này shop chưa rõ. Bạn vui lòng diễn đạt lại giúp shop nhé!"
@@ -105,6 +118,9 @@ responses:
   utter_default:
   - text: "Xin lỗi, Gemini Shop chưa hiểu ý bạn lắm. Bạn có thể nói rõ hơn được không?"
   - text: "Dạ, mục này shop chưa rõ. Bạn cần tư vấn về giá hay xem sản phẩm ạ?"
+
+actions:
+  - action_get_product_price # <-- Tên Action Python sẽ gọi vào MySQL
 
 session_config:
   session_expiration_time: 60

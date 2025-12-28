@@ -257,3 +257,11 @@ nlu:
     - thoi tiet hom nay
     - ke chuyen cuoi di
 
+- intent: ask_price
+  examples: |
+    - cái [áo thun](product_name) bao nhiêu tiền
+    - [quần jean](product_name) giá sao shop
+    - cho mình xin giá [áo khoác](product_name)
+    - [áo thun](product_name) bao nhiêu
+    - giá của [quần jean](product_name) là bao nhiêu
+    - cho mình hỏi giá
