@@ -30,6 +30,7 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 import mysql.connector
 
+
 class ActionGetProductPrice(Action):
     def name(self) -> Text:
         return "action_get_product_price"

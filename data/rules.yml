@@ -36,4 +36,9 @@ rules:
 - rule: Thông báo khi câu hỏi nằm ngoài phạm vi hỗ trợ
   steps:
   - intent: out_of_scope
-  - action: utter_out_of_scope      
+  - action: utter_out_of_scope   
+
+- rule: Trả lời giá khi khách hỏi
+  steps:
+    - intent: ask_price
+    - action: action_get_product_price   
