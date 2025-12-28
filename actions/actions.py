@@ -77,3 +77,51 @@ class ActionGetProductPrice(Action):
                 connection.close()
 
         return []
+
+class ActionGetProductDescription(Action):
+    def name(self) -> Text:
+        # Tên này phải trùng với khai báo trong domain.yml
+        return "action_get_product_description"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        # 1. Lấy thực thể product_name
+        product_name = next(tracker.get_latest_entity_values("product_name"), None)
+
+        if not product_name:
+            dispatcher.utter_message(text="Bạn muốn xem thông tin chi tiết của sản phẩm nào ạ?")
+            return []
+
+        try:
+            # 2. Kết nối MySQL
+            connection = mysql.connector.connect(
+                host='127.0.0.1',
+                user='gemini_user',
+                password='123456',
+                database='gemini_shop'
+            )
+            cursor = connection.cursor(dictionary=True)
+
+            # 3. Truy vấn lấy Description
+            query = "SELECT name, description FROM products WHERE LOWER(name) LIKE LOWER(%s) LIMIT 1"
+            cursor.execute(query, ("%" + product_name + "%",))
+            result = cursor.fetchone()
+
+            if result:
+                name = result['name']
+                desc = result['description']
+                dispatcher.utter_message(text=f"Thông tin chi tiết về {name}: {desc}")
+            else:
+                dispatcher.utter_message(text=f"Xin lỗi, shop chưa có thông tin mô tả cho sản phẩm '{product_name}'.")
+
+        except mysql.connector.Error as err:
+            dispatcher.utter_message(text="Hệ thống đang gặp lỗi kết nối dữ liệu.")
+        
+        finally:
+            if 'connection' in locals() and connection.is_connected():
+                cursor.close()
+                connection.close()
+
+        return []

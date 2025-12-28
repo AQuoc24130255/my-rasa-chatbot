@@ -11,6 +11,7 @@ intents:
   - nlu_fallback
   - out_of_scope
   - ask_price
+  - ask_description
 entities:
   - product_name # <-- Khai báo để Bot nhận diện "áo thun", "quần jean"
 
@@ -121,7 +122,7 @@ responses:
 
 actions:
   - action_get_product_price # <-- Tên Action Python sẽ gọi vào MySQL
-
+  - action_get_product_description
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
