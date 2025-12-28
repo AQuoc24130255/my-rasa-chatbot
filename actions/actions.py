@@ -57,7 +57,7 @@ class ActionGetProductPrice(Action):
             cursor = connection.cursor(dictionary=True)
 
             # Truy vấn tìm kiếm sản phẩm (dùng LIKE để tìm kiếm gần đúng)
-            query = "SELECT name, price FROM products WHERE name LIKE %s LIMIT 1"
+            query = "SELECT name, price FROM products WHERE LOWER(name) LIKE LOWER(%s) LIMIT 1"
             cursor.execute(query, ("%" + product_name + "%",))
             result = cursor.fetchone()
 
