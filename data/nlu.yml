@@ -259,14 +259,16 @@ nlu:
 
 - intent: ask_price
   examples: |
-    - cái [máy tính](product_name) bao nhiêu tiền
+    - cái [Apple MacBook Air M4 (13 inch, 2025)](product_name) bao nhiêu tiền
     - [Apple MacBook](product_name) giá sao shop
     - cho mình xin giá [laptop](product_name)
-    - [máy tính](product_name) bao nhiêu
+    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) bao nhiêu
     - giá của [laptop](product_name) là bao nhiêu
+    - giá [laptop](product_name) là bao nhiêu
+    - giá [laptop](product_name)
     - cho mình hỏi giá
-    - [máy tính](product_name) giá nhiêu vậy
-    - [máy tính](product_name) giá ntn shop ơi
+    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá nhiêu vậy
+    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá ntn shop ơi
     - cho hỏi [laptop](product_name) bao nhiêu tiền một cái
     - giá [laptop](product_name) thế nào bạn
     - check giá giúp mình mẫu [laptop](product_name) với
@@ -274,31 +276,53 @@ nlu:
     - [Apple MacBook](product_name) bn ạ
     - mình muốn biết giá [laptop](product_name)
     - giá rổ cái [Apple MacBook](product_name) này sao shop
-    - cái này [máy tính](product_name) giá cả sao
+    - cái này [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá cả sao
     - [Apple MacBook](product_name) có đắt không shop
     - tư vấn giá [laptop](product_name) cho mình nhé
 
 - intent: ask_description
   examples: |
-    - mẫu [máy tính](product_name) này chất liệu gì vậy
+    - mẫu [Apple MacBook Air M4 (13 inch, 2025)](product_name) này chất liệu gì vậy
     - cho mình xem mô tả [Apple MacBook](product_name)
     - thông tin chi tiết của [laptop](product_name)
-    - [máy tính](product_name) này trông như thế nào
+    - thông tin của [laptop](product_name)
+    - thông tin [laptop](product_name)
+    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) này trông như thế nào
     - chất liệu của [Apple MacBook](product_name) là gì
     - cho mình xem chi tiết [laptop](product_name)
-    - [máy tính](product_name) này làm từ vải gì shop?
+    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) này làm từ vải gì shop?
     - shop ơi, [Apple MacBook](product_name) này form gì thế
     - cho mình biết thêm về [laptop](product_name) nhé
-    - đặc điểm của [máy tính](product_name) là gì
+    - đặc điểm của [Apple MacBook Air M4 (13 inch, 2025)](product_name) là gì
     - [Apple MacBook](product_name) này mặc có co giãn không
     - mình muốn xem thông số [laptop](product_name)
-    - chi tiết [máy tính](product_name)
+    - chi tiết [Apple MacBook Air M4 (13 inch, 2025)](product_name)
     - [Apple MacBook](product_name) này có gì đặc biệt không bạn
     - mô tả giúp mình cái [laptop](product_name) này với
-    - tư vấn cho mình về [máy tính](product_name) nha
+    - tư vấn cho mình về [Apple MacBook Air M4 (13 inch, 2025)](product_name) nha
     - mẫu [Apple MacBook](product_name) này có những thông tin gì
     - review cho mình cái [laptop](product_name) này đi shop
 
+- intent: ask_product_count
+  examples: |
+    - shop có bao nhiêu mẫu áo quần
+    - có tất cả bao nhiêu loại sản phẩm
+    - shop đang bán bao nhiêu mẫu tất cả
+    - cho mình xem tổng số mẫu mã hiện có
+
+- intent: ask_all_products
+  examples: |
+    - shop có những mẫu nào vậy
+    - liệt kê tất cả sản phẩm đi shop
+    - cho mình xem danh sách các mẫu đang có
+    - shop bán những gì thế
+    - hiện tại có những mẫu mã nào
+    - danh mục sản phẩm của shop
+    - xem các mẫu shop đang bán
+
+- lookup: product_name
+  examples: |
+    - Apple MacBook Air M4 (13 inch, 2025)
 
 
 

@@ -47,3 +47,13 @@ rules:
   steps:
   - intent: ask_description
   - action: action_get_product_description
+
+- rule: Trả lời số lượng mẫu mã
+  steps:
+  - intent: ask_product_count
+  - action: action_get_product_count
+
+- rule: Hiển thị tất cả mẫu sản phẩm
+  steps:
+  - intent: ask_all_products
+  - action: action_show_all_products
