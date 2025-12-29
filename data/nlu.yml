@@ -259,45 +259,45 @@ nlu:
 
 - intent: ask_price
   examples: |
-    - cái [áo thun](product_name) bao nhiêu tiền
-    - [quần jean](product_name) giá sao shop
-    - cho mình xin giá [áo khoác](product_name)
-    - [áo thun](product_name) bao nhiêu
-    - giá của [quần jean](product_name) là bao nhiêu
+    - cái [máy tính](product_name) bao nhiêu tiền
+    - [Apple MacBook](product_name) giá sao shop
+    - cho mình xin giá [laptop](product_name)
+    - [máy tính](product_name) bao nhiêu
+    - giá của [laptop](product_name) là bao nhiêu
     - cho mình hỏi giá
-    - [áo thun](product_name) giá nhiêu vậy
-    - [quần jean](product_name) giá ntn shop ơi
-    - cho hỏi [áo khoác](product_name) bao nhiêu tiền một cái
-    - giá [áo thun](product_name) thế nào bạn
-    - check giá giúp mình mẫu [quần jean](product_name) với
-    - shop ơi [áo khoác](product_name) nhiêu xiền
-    - [áo thun](product_name) bn ạ
-    - mình muốn biết giá [quần jean](product_name)
-    - giá rổ cái [áo khoác](product_name) này sao shop
-    - cái này [áo thun](product_name) giá cả sao
-    - [quần jean](product_name) có đắt không shop
-    - tư vấn giá [áo khoác](product_name) cho mình nhé
+    - [máy tính](product_name) giá nhiêu vậy
+    - [máy tính](product_name) giá ntn shop ơi
+    - cho hỏi [laptop](product_name) bao nhiêu tiền một cái
+    - giá [laptop](product_name) thế nào bạn
+    - check giá giúp mình mẫu [laptop](product_name) với
+    - shop ơi [Apple MacBook](product_name) nhiêu xiền
+    - [Apple MacBook](product_name) bn ạ
+    - mình muốn biết giá [laptop](product_name)
+    - giá rổ cái [Apple MacBook](product_name) này sao shop
+    - cái này [máy tính](product_name) giá cả sao
+    - [Apple MacBook](product_name) có đắt không shop
+    - tư vấn giá [laptop](product_name) cho mình nhé
 
 - intent: ask_description
   examples: |
-    - mẫu [áo thun](product_name) này chất liệu gì vậy
-    - cho mình xem mô tả [quần jean](product_name)
-    - thông tin chi tiết của [áo khoác](product_name)
-    - [áo thun](product_name) này trông như thế nào
-    - chất liệu của [quần jean](product_name) là gì
-    - cho mình xem chi tiết [áo khoác](product_name)
-    - [áo thun](product_name) này làm từ vải gì shop?
-    - shop ơi, [quần jean](product_name) này form gì thế
-    - cho mình biết thêm về [áo khoác](product_name) nhé
-    - đặc điểm của [áo thun](product_name) là gì
-    - [quần jean](product_name) này mặc có co giãn không
-    - mình muốn xem thông số [áo khoác](product_name)
-    - chi tiết [áo thun](product_name)
-    - [quần jean](product_name) này có gì đặc biệt không bạn
-    - mô tả giúp mình cái [áo khoác](product_name) này với
-    - tư vấn cho mình về [áo thun](product_name) nha
-    - mẫu [quần jean](product_name) này có những thông tin gì
-    - review cho mình cái [áo khoác](product_name) này đi shop
+    - mẫu [máy tính](product_name) này chất liệu gì vậy
+    - cho mình xem mô tả [Apple MacBook](product_name)
+    - thông tin chi tiết của [laptop](product_name)
+    - [máy tính](product_name) này trông như thế nào
+    - chất liệu của [Apple MacBook](product_name) là gì
+    - cho mình xem chi tiết [laptop](product_name)
+    - [máy tính](product_name) này làm từ vải gì shop?
+    - shop ơi, [Apple MacBook](product_name) này form gì thế
+    - cho mình biết thêm về [laptop](product_name) nhé
+    - đặc điểm của [máy tính](product_name) là gì
+    - [Apple MacBook](product_name) này mặc có co giãn không
+    - mình muốn xem thông số [laptop](product_name)
+    - chi tiết [máy tính](product_name)
+    - [Apple MacBook](product_name) này có gì đặc biệt không bạn
+    - mô tả giúp mình cái [laptop](product_name) này với
+    - tư vấn cho mình về [máy tính](product_name) nha
+    - mẫu [Apple MacBook](product_name) này có những thông tin gì
+    - review cho mình cái [laptop](product_name) này đi shop
 
 
 

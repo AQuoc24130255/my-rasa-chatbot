@@ -46,7 +46,7 @@ responses:
   - text: "Đừng buồn nữa nhé, mọi chuyện rồi sẽ ổn thôi mà. Shop luôn ở đây đồng hành cùng bạn! ❤️"
   - text: "Gửi bạn một cái ôm thật chặt từ Gemini Shop nhé! 🫂 Cười lên một cái nào."   
     # Nhóm hướng ngoại, khích lệ
-  - text: "Nỗi buồn sẽ qua đi nhanh thôi! Hay là mình lướt xem vài mẫu áo mới tại shop để thay đổi tâm trạng nhé? ✨"
+  - text: "Nỗi buồn sẽ qua đi nhanh thôi! Hay là mình lướt xem vài mẫu laptop mới tại shop để thay đổi tâm trạng nhé? ✨"
   - text: "Mạnh mẽ lên bạn ơi! Bạn xứng đáng với những điều tốt đẹp nhất."
     # Nhóm sử dụng hình ảnh/GIF (Giúp khách hàng vui vẻ hơn)
   - text: "Tặng bạn một tấm hình dễ thương nè, hy vọng nó làm bạn mỉm cười!"
@@ -75,8 +75,8 @@ responses:
   - text: "Dạ, đó là niềm vinh dự của shop khi được hỗ trợ bạn ạ!"
   - text: "Rất vui khi thông tin của shop khiến bạn hài lòng. Cảm ơn bạn đã tin tưởng Gemini Shop."    
     # Nhóm gợi ý hành động tiếp theo
-  - text: "Vui quá đi! Giờ bạn có muốn xem thêm các mẫu áo thun mới về không ạ?"
-  - text: "Hì hì, cảm ơn bạn nhé! Bạn cần shop tư vấn gì thêm về size số hay giá cả không?"
+  - text: "Vui quá đi! Giờ bạn có muốn xem thêm các máy tính mới về không ạ?"
+  - text: "Hì hì, cảm ơn bạn nhé! Bạn cần shop tư vấn gì thêm về thông số hay giá cả không?"
 
   utter_goodbye:
   - text: "Tạm biệt bạn! Hẹn gặp lại bạn sớm nhất tại Gemini Shop nhé."
@@ -92,7 +92,7 @@ responses:
   
   utter_ask_rephrase:
   - text: "Rất tiếc vì chưa giúp được bạn. Bạn có thể mô tả chi tiết hơn yêu cầu được không ạ? Shop sẽ cố gắng hết sức!"
-  - text: "Dạ, shop hiểu rồi. Có vẻ shop đang nhầm lẫn chút xíu. Bạn muốn hỏi về sản phẩm khác hay cần tư vấn size ạ?"
+  - text: "Dạ, shop hiểu rồi. Có vẻ shop đang nhầm lẫn chút xíu. Bạn muốn hỏi về sản phẩm khác hay cần tư vấn thông tin chi tiết ạ?"
   - text: "Xin lỗi bạn nhé! Bạn hãy thử nói lại ý của mình theo cách khác để shop dễ hỗ trợ hơn nha."
 
   utter_iamabot:
@@ -113,7 +113,7 @@ responses:
   - text: "Dạ, phần này shop chưa rõ. Bạn vui lòng diễn đạt lại giúp shop nhé!"
 
   utter_out_of_scope:
-  - text: "Dạ, hiện tại Gemini Shop chỉ hỗ trợ tư vấn về quần áo và đơn hàng thôi ạ. Mong bạn thông cảm nhé!"
+  - text: "Dạ, hiện tại Gemini Shop chỉ hỗ trợ tư vấn về các sản phẩm điện tử thôi ạ. Mong bạn thông cảm nhé!"
   - text: "Xin lỗi, vấn đề này nằm ngoài khả năng giải đáp của shop rồi ạ."
 
   utter_default:

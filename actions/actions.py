@@ -57,14 +57,17 @@ class ActionGetProductPrice(Action):
             cursor = connection.cursor(dictionary=True)
 
             # Truy vấn tìm kiếm sản phẩm (dùng LIKE để tìm kiếm gần đúng)
-            query = "SELECT name, price FROM products WHERE LOWER(name) LIKE LOWER(%s) LIMIT 1"
+            query = "SELECT name, price FROM products WHERE LOWER(name) LIKE LOWER(%s) LIMIT 3"
             cursor.execute(query, ("%" + product_name + "%",))
-            result = cursor.fetchone()
+            result = cursor.fetchall()
 
-            if result:
+            if len(results) == 1:
                 name = result['name']
                 price = "{:,.0f}".format(result['price']) # Định dạng 150,000
                 dispatcher.utter_message(text=f"Dạ, sản phẩm {name} hiện có giá là {price} VNĐ ạ.")
+            elif len(results) > 1:
+                names = ", ".join([r['name'] for r in results])
+                dispatcher.utter_message(text=f"Shop có vài loại '{product_name}': {names}. Bạn muốn hỏi chính xác loại nào ạ?")
             else:
                 dispatcher.utter_message(text=f"Tiếc quá, hiện tại shop chưa có thông tin giá cho '{product_name}' ạ.")
 
@@ -109,10 +112,13 @@ class ActionGetProductDescription(Action):
             cursor.execute(query, ("%" + product_name + "%",))
             result = cursor.fetchone()
 
-            if result:
+            if len(results) == 1:
                 name = result['name']
                 desc = result['description']
                 dispatcher.utter_message(text=f"Thông tin chi tiết về {name}: {desc}")
+            elif len(results) > 1:
+                names = ", ".join([r['name'] for r in results])
+                dispatcher.utter_message(text=f"Shop có vài loại '{product_name}': {names}. Bạn muốn hỏi chính xác loại nào ạ?")
             else:
                 dispatcher.utter_message(text=f"Xin lỗi, shop chưa có thông tin mô tả cho sản phẩm '{product_name}'.")
 
