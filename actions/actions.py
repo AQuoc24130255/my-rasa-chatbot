@@ -49,8 +49,11 @@ class ActionGetProductPrice(Action):
             return []
 
         search_term = unidecode(raw_product_name).lower()
-        search_term = re.sub(r'[^a-z0-9\s]', ' ', search_term)
-        search_term = ' '.join(search_term.split())
+        keywords = re.findall(r'\b\w+\b', search_term)
+
+        if not keywords:
+            dispatcher.utter_message(text="Shop chưa rõ tên sản phẩm bạn cần hỏi.")
+            return []
 
         try:
             # Kết nối Database (Dùng IP 127.0.0.1 để tránh lỗi socket)
@@ -62,24 +65,48 @@ class ActionGetProductPrice(Action):
             )
             cursor = connection.cursor(dictionary=True)
 
+            # Tìm sản phẩm chứa từ thứ 1 VÀ từ thứ 2 VÀ từ thứ 3...
+            query = "SELECT name, price FROM products WHERE "
+            conditions = []
+            params = []
+
+            # Chỉ lấy tối đa 4 từ khóa quan trọng nhất để tìm kiếm không bị quá hẹp
+            for word in keywords[:4]: 
+                conditions.append("search_name LIKE %s")
+                params.append(f"%{word}%")
+            
+            query += " AND ".join(conditions)
+            query += " ORDER BY LENGTH(name) ASC LIMIT 3"
+
+            cursor.execute(query, tuple(params))
+            results = cursor.fetchall()
+            '''
             # Truy vấn tìm kiếm sản phẩm (dùng LIKE để tìm kiếm gần đúng)
             query = """SELECT name, price FROM products 
                 WHERE search_name LIKE %s 
                 OR %s LIKE CONCAT('%', search_name, '%')
                 ORDER BY LENGTH(search_name) DESC
-                LIMIT 3
+                LIMIT 5
             """
-            cursor.execute(query, ("%" + search_term + "%",))
+            cursor.execute(query, ("%" + search_term + "%",search_term))
             results = cursor.fetchall()
-
+            '''
             if len(results) == 1:
                 item = results[0]
                 name = item['name']
                 price = "{:,.0f}".format(item['price']) # Định dạng 150,000
                 dispatcher.utter_message(text=f"Dạ, sản phẩm {name} hiện có giá là {price} VNĐ ạ.")
             elif len(results) > 1:
-                names = ", ".join([r['name'] for r in results])
-                dispatcher.utter_message(text=f"Shop có vài loại '{raw_product_name}': {names}. Bạn muốn hỏi chính xác loại nào ạ?")
+                best_match = results[0]
+                names = ", ".join([r['name'] for r in results[1:]])
+
+                price_suggest = "{:,.0f}".format(best_match['price'])
+
+                msg = (f"Dạ, dòng '{raw_product_name}' shop có khá nhiều mẫu.\n\n"
+                       f"🌟 **Nổi bật nhất** là {best_match['name']} với giá khoảng **{price_suggest} VNĐ**.\n\n"
+                       f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
+                
+                dispatcher.utter_message(text=msg)
             else:
                 dispatcher.utter_message(text=f"Tiếc quá, hiện tại shop chưa có thông tin giá cho '{raw_product_name}' ạ.")
 
@@ -109,13 +136,12 @@ class ActionGetProductDescription(Action):
             dispatcher.utter_message(text="Bạn muốn xem thông tin chi tiết của sản phẩm nào ạ?")
             return []
 
-        print(f"DEBUG: Rasa extracted = {raw_product_name}")
-
         search_term = unidecode(raw_product_name).lower()
-        search_term = re.sub(r'[^a-z0-9\s]', ' ', search_term)
-        search_term = ' '.join(search_term.split())
-        
-        print(f"DEBUG: Search term after unidecode = {search_term}")
+        keywords = re.findall(r'\b\w+\b', search_term)
+
+        if not keywords:
+            dispatcher.utter_message(text="Shop chưa rõ tên sản phẩm bạn cần hỏi.")
+            return []
 
         try:
             # 2. Kết nối MySQL
@@ -127,6 +153,22 @@ class ActionGetProductDescription(Action):
             )
             cursor = connection.cursor(dictionary=True)
 
+            # Tìm sản phẩm chứa từ thứ 1 VÀ từ thứ 2 VÀ từ thứ 3...
+            query = "SELECT name, description FROM products WHERE "
+            conditions = []
+            params = []
+
+            # Chỉ lấy tối đa 4 từ khóa quan trọng nhất để tìm kiếm không bị quá hẹp
+            for word in keywords[:4]: 
+                conditions.append("search_name LIKE %s")
+                params.append(f"%{word}%")
+            
+            query += " AND ".join(conditions)
+            query += " ORDER BY LENGTH(name) ASC LIMIT 3"
+
+            cursor.execute(query, tuple(params))
+            results = cursor.fetchall()
+            '''
             # 3. Truy vấn lấy Description
             query = """SELECT name, description FROM products 
                 WHERE search_name LIKE %s 
@@ -134,8 +176,10 @@ class ActionGetProductDescription(Action):
                 ORDER BY LENGTH(search_name) DESC
                 LIMIT 3
             """
-            cursor.execute(query, ("%" + search_term + "%",))
+            cursor.execute(query, ("%" + search_term + "%",search_term))
             results = cursor.fetchall()
+            '''
+
 
             if len(results) == 1:
                 item = results[0]
@@ -143,8 +187,15 @@ class ActionGetProductDescription(Action):
                 desc = item['description']
                 dispatcher.utter_message(text=f"Thông tin chi tiết về {name}: {desc}")
             elif len(results) > 1:
-                names = ", ".join([r['name'] for r in results])
-                dispatcher.utter_message(text=f"Shop có vài loại '{raw_product_name}': {names}. Bạn muốn hỏi chính xác loại nào ạ?")
+                best_match = results[0]
+                short_desc = (best_match['description'][:150] + '...') if len(best_match['description']) > 150 else best_match['description']
+                names = ", ".join([r['name'] for r in results[1:]])
+
+                msg = (f"Dạ, dòng '{raw_product_name}' shop có khá nhiều mẫu.\n\n"
+                       f"🌟 **Nổi bật nhất** là {best_match['name']} với thông tin là **{short_desc}**.\n\n"
+                       f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
+                
+                dispatcher.utter_message(text=msg)
             else:
                 dispatcher.utter_message(text=f"Xin lỗi, shop chưa có thông tin mô tả cho sản phẩm '{raw_product_name}'.")
 
