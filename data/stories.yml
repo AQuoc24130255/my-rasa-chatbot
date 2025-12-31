@@ -60,3 +60,140 @@ stories:
   - action: utter_greet
   - intent: goodbye
   - action: utter_goodbye
+
+- story: khách hỏi giá và hài lòng
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_price
+  - action: action_get_product_price
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+- story: khách hỏi giá sau đó hỏi thêm mô tả chi tiết
+  steps:
+  - intent: ask_price
+  - action: action_get_product_price
+  - intent: ask_description
+  - action: action_get_product_description
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: khách hỏi mô tả nhưng bot không rõ nên hỏi lại
+  steps:
+  - intent: ask_description
+  - action: action_get_product_description
+  - intent: deny
+  - action: utter_ask_rephrase
+  - intent: ask_description
+  - action: action_get_product_description
+
+# --- NHÓM KHÁM PHÁ SẢN PHẨM (Discovery) ---
+
+- story: khách muốn xem tất cả sản phẩm shop có
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_all_products
+  - action: action_show_all_products
+  - intent: ask_product_count
+  - action: action_get_product_count
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: khách hỏi số lượng sản phẩm rồi mới hỏi giá cụ thể
+  steps:
+  - intent: ask_product_count
+  - action: action_get_product_count
+  - intent: ask_price
+  - action: action_get_product_price
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+# --- NHÓM XỬ LÝ TÌNH HUỐNG NGOẠI LỆ (Edge Cases) ---
+
+- story: khách hỏi linh tinh (ngoài phạm vi) sau đó quay lại hỏi giá
+  steps:
+  - intent: out_of_scope
+  - action: utter_out_of_scope
+  - intent: ask_price
+  - action: action_get_product_price
+
+- story: khách kiểm tra bot là ai
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+  - intent: greet
+  - action: utter_greet
+
+- story: xử lý khi bot không hiểu ý (fallback)
+  steps:
+  - intent: nlu_fallback
+  - action: utter_please_rephrase
+  - intent: ask_price
+  - action: action_get_product_price
+
+# --- LUỒNG 1: TỪ CẢM XÚC SANG MUA SẮM (Chuyển đổi tâm trạng) ---
+- story: khách buồn nhưng sau đó muốn xem sản phẩm để giải khuây
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+  - intent: ask_all_products
+  - action: action_show_all_products
+
+# --- LUỒNG 2: KHÁCH HÀNG "BẬN RỘN" (Hỏi trực diện, không chào hỏi) ---
+- story: khách vào hỏi giá luôn không chào hỏi
+  steps:
+  - intent: ask_price
+  - action: action_get_product_price
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+  - intent: goodbye
+  - action: utter_goodbye
+
+# --- LUỒNG 3: TÌM HIỂU KỸ (Hỏi từ tổng quát đến chi tiết) ---
+- story: tìm hiểu toàn diện từ danh sách -> số lượng -> giá -> mô tả
+  steps:
+  - intent: ask_all_products
+  - action: action_show_all_products
+  - intent: ask_product_count
+  - action: action_get_product_count
+  - intent: ask_price
+  - action: action_get_product_price
+  - intent: ask_description
+  - action: action_get_product_description
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+# --- LUỒNG 4: SỬA LỖI VÀ QUAY LẠI QUY TRÌNH (Recovery Path) ---
+- story: khách hỏi sai bị fallback rồi mới tìm được đúng sản phẩm
+  steps:
+  - intent: nlu_fallback
+  - action: utter_please_rephrase
+  - intent: ask_description
+  - action: action_get_product_description
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+# --- LUỒNG 5: HỎI XOÁY ĐÁP XOAY (Kiểm tra năng lực bot) ---
+- story: khách hỏi bot là ai rồi mới hỏi giá
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+  - intent: mood_great
+  - action: utter_happy
+  - intent: ask_price
+  - action: action_get_product_price
+  - intent: goodbye
+  - action: utter_goodbye
+

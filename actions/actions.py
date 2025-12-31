@@ -31,6 +31,7 @@ from rasa_sdk.executor import CollectingDispatcher
 import mysql.connector
 from unidecode import unidecode
 import re
+from thefuzz import fuzz, process
 
 
 class ActionGetProductPrice(Action):
@@ -65,8 +66,9 @@ class ActionGetProductPrice(Action):
             )
             cursor = connection.cursor(dictionary=True)
 
+            # CHIẾN THUẬT 1: SQL LIKE (ƯU TIÊN CHÍNH XÁC) ---
             # Tìm sản phẩm chứa từ thứ 1 VÀ từ thứ 2 VÀ từ thứ 3...
-            query = "SELECT name, price FROM products WHERE "
+            query = "SELECT name, price, search_name FROM products WHERE "
             conditions = []
             params = []
 
@@ -80,6 +82,19 @@ class ActionGetProductPrice(Action):
 
             cursor.execute(query, tuple(params))
             results = cursor.fetchall()
+            # --- CHIẾN THUẬT 2: FUZZY MATCHING (CỨU CÁNH KHI SAI CHÍNH TẢ) ---
+            if not results:
+                # Lấy toàn bộ danh sách search_name từ DB để so sánh mờ
+                cursor.execute("SELECT name, search_name, price FROM products")
+                all_products = cursor.fetchall()
+                
+                choices = {p['search_name']: p for p in all_products}
+                # Tìm kiếm mờ (lấy kết quả giống nhất)
+                # scorer=fuzz.token_set_ratio giúp xử lý tốt việc đảo thứ tự từ
+                best_match_key, score = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
+
+                if score > 70:  # Ngưỡng tin cậy 70%
+                    results = [choices[best_match_key]]
             '''
             # Truy vấn tìm kiếm sản phẩm (dùng LIKE để tìm kiếm gần đúng)
             query = """SELECT name, price FROM products 
@@ -153,8 +168,9 @@ class ActionGetProductDescription(Action):
             )
             cursor = connection.cursor(dictionary=True)
 
+            # --- CHIẾN THUẬT 1: SQL LIKE (ƯU TIÊN CHÍNH XÁC) ---
             # Tìm sản phẩm chứa từ thứ 1 VÀ từ thứ 2 VÀ từ thứ 3...
-            query = "SELECT name, description FROM products WHERE "
+            query = "SELECT name, description, search_name FROM products WHERE "
             conditions = []
             params = []
 
@@ -168,6 +184,19 @@ class ActionGetProductDescription(Action):
 
             cursor.execute(query, tuple(params))
             results = cursor.fetchall()
+            # --- CHIẾN THUẬT 2: FUZZY MATCHING (CỨU CÁNH KHI SAI CHÍNH TẢ) ---
+            if not results:
+                # Lấy toàn bộ danh sách search_name từ DB để so sánh mờ
+                cursor.execute("SELECT name, search_name, price FROM products")
+                all_products = cursor.fetchall()
+                
+                choices = {p['search_name']: p for p in all_products}
+                # Tìm kiếm mờ (lấy kết quả giống nhất)
+                # scorer=fuzz.token_set_ratio giúp xử lý tốt việc đảo thứ tự từ
+                best_match_key, score = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
+
+                if score > 70:  # Ngưỡng tin cậy 70%
+                    results = [choices[best_match_key]]
             '''
             # 3. Truy vấn lấy Description
             query = """SELECT name, description FROM products 

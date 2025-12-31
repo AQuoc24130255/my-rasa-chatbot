@@ -260,9 +260,12 @@ nlu:
 - intent: ask_price
   examples: |
     - cái [Apple MacBook Air M4 (13 inch, 2025)](product_name) bao nhiêu tiền
+    - cái [Apple MacBook Pro M5(13 inch, 2025)](product_name) bao nhiêu tiền
     - [Apple MacBook](product_name) giá sao shop
     - cho mình xin giá [laptop](product_name)
     - [Apple MacBook Air M4 (13 inch, 2025)](product_name) bao nhiêu
+    - [Apple MacBook Air M4](product_name) bao nhiêu
+    - [Apple MacBook Air](product_name) bao nhiêu
     - giá của [laptop](product_name) là bao nhiêu
     - giá [laptop](product_name) là bao nhiêu
     - giá [laptop](product_name)
@@ -279,11 +282,25 @@ nlu:
     - cái này [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá cả sao
     - [Apple MacBook](product_name) có đắt không shop
     - tư vấn giá [laptop](product_name) cho mình nhé
+    - giá của [Apple MacBook Air](product_name)
+    - [Apple MacBook Air](product_name) bao nhiêu tiền
+    - cho mình xin giá [Apple MacBook Air M4](product_name)
+    - [MacBook Air 13 inch](product_name) giá sao
+    - [Apple MacBook Pro 14 inch](product_name) giá bao nhiêu
 
 - intent: ask_description
   examples: |
     - mẫu [Apple MacBook Air M4 (13 inch, 2025)](product_name) này chất liệu gì vậy
+    - cho mình xem mô tả [Apple MacBook Air M4 13 inch](product_name)
     - cho mình xem mô tả [Apple MacBook](product_name)
+    - thông tin chi tiết của [Apple MacBook Air M4 (13 inch, 2025)](product_name)
+    - thông tin chi tiết của [Apple MacBook Air M4 (13 inch)](product_name)
+    - thông tin chi tiết của [Apple MacBook Air M4 13 inch](product_name)
+    - thông tin chi tiết của [Apple MacBook Air M4](product_name)
+    - thông tin chi tiết của [Apple MacBook Pro M5](product_name)
+    - thông tin chi tiết của [Apple MacBook Air](product_name)
+    - thông tin chi tiết của [Apple MacBook Pro](product_name)
+    - thông tin chi tiết của [Apple MacBook](product_name)
     - thông tin chi tiết của [laptop](product_name)
     - thông tin của [laptop](product_name)
     - thông tin [laptop](product_name)
@@ -302,13 +319,42 @@ nlu:
     - tư vấn cho mình về [Apple MacBook Air M4 (13 inch, 2025)](product_name) nha
     - mẫu [Apple MacBook](product_name) này có những thông tin gì
     - review cho mình cái [laptop](product_name) này đi shop
+    - thong tin cua [Apple MacBook Air](product_name)
+    - [Apple MacBook Air](product_name) la san pham j
+    - [Apple MacBook Air](product_name) la san pham gi vay
+    - cho mình xin tu van ve [Apple MacBook Air M4](product_name)
+    - [MacBook Air 13 inch](product_name) co dac diem noi bat gi khong
+    - [Apple MacBook Pro 14 inch](product_name) co tinh nang vuot troi nao khong
 
 - intent: ask_product_count
   examples: |
-    - shop có bao nhiêu mẫu áo quần
+    - shop có bao nhiêu mẫu máy tính
     - có tất cả bao nhiêu loại sản phẩm
     - shop đang bán bao nhiêu mẫu tất cả
     - cho mình xem tổng số mẫu mã hiện có
+    - shop co nhung mau nao vay
+    - liet ke tat ca san pham di shop
+    - cho minh xem danh sach cac mau dang co
+    - shop ban nhung gi the
+    - hien tai co nhung mau ma nao
+    - danh muc san pham cua shop
+    - xem cac mau shop dang ban
+    - cua hang co bao nhieu loai linh kien vay
+    - ben minh dang co nhung dong san pham dien tu nao
+    - cac mat hang linh kien dang san co la gi
+    - liet ke danh sach do dien tu dang ban
+    - cho xem catalogue linh kien cua shop
+    - nhung mau linh kien moi nhat hien nay
+    - kho con nhung loai phu kien dien tu nao
+    - cho minh xem tat ca linh kien shop co
+    - cua hang co nhung modem hay vi mach nao
+    - ben em co nhung dong san pham nao dang kinh doanh
+    - cửa hàng mình có bao nhiêu loại linh kiện vậy
+    - bên mình đang có những dòng sản phẩm điện tử nào
+    - các mặt hàng linh kiện đang sẵn có là gì
+    - liệt kê danh sách đồ điện tử đang bán
+    - cho xem catalogue linh kiện của shop
+    - những mẫu linh kiện mới nhất hiện nay
 
 - intent: ask_all_products
   examples: |
@@ -319,10 +365,59 @@ nlu:
     - hiện tại có những mẫu mã nào
     - danh mục sản phẩm của shop
     - xem các mẫu shop đang bán
+    - cửa hàng có những loại linh kiện nào
+    - danh sách đồ điện tử đang sẵn có
+    - cho xem catalogue linh kiện điện tử
+    - bên mình đang kinh doanh những mặt hàng nào
+    - các dòng vi mạch hiện có tại cửa hàng
+    - cho anh xem toàn bộ sản phẩm bên em
+    - shop co nhung mau nao vay
+    - liet ke tat ca san pham di shop
+    - cho minh xem danh sach cac mau dang co
+    - shop ban nhung gi the
+    - hien tai co nhung mau ma nao
+    - danh muc san pham cua shop
+    - xem cac mau shop dang ban
+    - cua hang co nhung loai linh kien nao
+    - danh sach do dien tu dang san co
+    - cho xem catalogue linh kien dien tu
+    - ben minh dang kinh doanh nhung mat hang nao
+    - cac dong vi mach hien co tai cua hang
+    - cho anh xem toan bo san pham ben em
+    - shop con nhung loai ic hay chip nao khong
 
 - lookup: product_name
   examples: |
     - Apple MacBook Air M4 (13 inch, 2025)
+    - Apple MacBook Air M4 (13 inch)
+    - Apple MacBook Air M4 13 inch
+    - Apple MacBook Air M4
+    - Apple MacBook Pro M5
+    - Apple MacBook Air
+    - Apple MacBook Pro
+    - Apple MacBook
+    - Apple
+    - iPhone 15 Pro Max
 
+- synonym: Apple
+  examples: |
+    - Apple Inc.
+    - Apple Computer
+    - Apple Computer Inc
+    - AAPL
+    - Táo Khuyết
+    - Công ty Apple
+    - Tập đoàn Apple
+    
+- synonym: MacBook
+  examples: |
+    - Mcbook
+    - Mccbook
+    - Mac buk
 
+- synonym: iPhone
+  examples: |
+    - Iphon
+    - Ipone
+    - Ifone
 
