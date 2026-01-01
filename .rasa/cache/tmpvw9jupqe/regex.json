@@ -1,0 +1,6 @@
+[
+  {
+    "name": "product_name",
+    "pattern": "(\\bApple\\ MacBook\\ Air\\ M4\\ \\(13\\ inch,\\ 2025\\)\\b|\\bApple\\ MacBook\\ Air\\ M4\\ \\(13\\ inch\\)\\b|\\bApple\\ MacBook\\ Air\\ M4\\ 13\\ inch\\b|\\bApple\\ MacBook\\ Air\\ M4\\b|\\bApple\\ MacBook\\ Pro\\ M5\\b|\\bApple\\ MacBook\\ Air\\b|\\bApple\\ MacBook\\ Pro\\b|\\bApple\\ MacBook\\b|\\bApple\\b|\\biPhone\\ 15\\ Pro\\ Max\\b|\\biPhone\\ 15\\ Pro\\b|\\biPhone\\ 15\\b|\\biPhone\\b)"
+  }
+]

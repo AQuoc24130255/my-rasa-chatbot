@@ -67,9 +67,7 @@ stories:
   - action: utter_greet
   - intent: ask_price
   - action: action_get_product_price
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
+
 
 - story: khách hỏi giá sau đó hỏi thêm mô tả chi tiết
   steps:
@@ -108,9 +106,7 @@ stories:
   - action: action_get_product_count
   - intent: ask_price
   - action: action_get_product_price
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
+
 
 # --- NHÓM XỬ LÝ TÌNH HUỐNG NGOẠI LỆ (Edge Cases) ---
 
@@ -120,9 +116,7 @@ stories:
   - action: utter_out_of_scope
   - intent: ask_price
   - action: action_get_product_price
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
+
 
 - story: khách kiểm tra bot là ai
   steps:
@@ -137,6 +131,7 @@ stories:
   - action: utter_please_rephrase
   - intent: ask_price
   - action: action_get_product_price
+ 
 
 # --- LUỒNG 1: TỪ CẢM XÚC SANG MUA SẮM (Chuyển đổi tâm trạng) ---
 - story: khách buồn nhưng sau đó muốn xem sản phẩm để giải khuây
@@ -154,20 +149,10 @@ stories:
   - action: action_get_product_price
   - intent: ask_description
   - action: action_get_product_description
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
 
-# --- LUỒNG 2: KHÁCH HÀNG "BẬN RỘN" (Hỏi trực diện, không chào hỏi) ---
-- story: khách vào hỏi giá luôn không chào hỏi
-  steps:
-  - intent: ask_price
-  - action: action_get_product_price
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
-  - intent: goodbye
-  - action: utter_goodbye
+
+
+
 
 # --- LUỒNG 3: TÌM HIỂU KỸ (Hỏi từ tổng quát đến chi tiết) ---
 - story: tìm hiểu toàn diện từ danh sách -> số lượng -> giá -> mô tả
@@ -180,9 +165,7 @@ stories:
   - action: action_get_product_price
   - intent: ask_description
   - action: action_get_product_description
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
+
 
 # --- LUỒNG 4: SỬA LỖI VÀ QUAY LẠI QUY TRÌNH (Recovery Path) ---
 - story: khách hỏi sai bị fallback rồi mới tìm được đúng sản phẩm
@@ -191,9 +174,7 @@ stories:
   - action: utter_please_rephrase
   - intent: ask_description
   - action: action_get_product_description
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
+
 
 # --- LUỒNG 5: HỎI XOÁY ĐÁP XOAY (Kiểm tra năng lực bot) ---
 - story: khách hỏi bot là ai rồi mới hỏi giá

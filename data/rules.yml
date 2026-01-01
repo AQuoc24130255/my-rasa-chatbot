@@ -43,10 +43,12 @@ rules:
   - intent: ask_price
   - action: action_get_product_price   
 
+
 - rule: Trả lời mô tả sản phẩm khi khách hỏi
   steps:
   - intent: ask_description
   - action: action_get_product_description
+
 
 - rule: Trả lời số lượng mẫu mã
   steps:
