@@ -120,6 +120,9 @@ stories:
   - action: utter_out_of_scope
   - intent: ask_price
   - action: action_get_product_price
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
 
 - story: khách kiểm tra bot là ai
   steps:
@@ -147,6 +150,13 @@ stories:
   - action: utter_happy
   - intent: ask_all_products
   - action: action_show_all_products
+  - intent: ask_price
+  - action: action_get_product_price
+  - intent: ask_description
+  - action: action_get_product_description
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
 
 # --- LUỒNG 2: KHÁCH HÀNG "BẬN RỘN" (Hỏi trực diện, không chào hỏi) ---
 - story: khách vào hỏi giá luôn không chào hỏi
@@ -197,3 +207,9 @@ stories:
   - intent: goodbye
   - action: utter_goodbye
 
+- story: khách hỏi sản phẩm lạ và chọn xem danh sách thay thế
+  steps:
+  - intent: ask_price
+  - action: action_get_product_price # Action này sẽ trả về thông báo "Không tìm thấy"
+  - intent: ask_all_products
+  - action: action_show_all_products

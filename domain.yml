@@ -38,7 +38,7 @@ responses:
   - text: "Chào bạn nhé! Cần shop tư vấn gì cứ nhắn tin nha."
   - text: "Hi! Shop đang online đây, bạn cần hỏi gì cứ thoải mái nhé!"    
     # Nhóm gợi ý hành động (Call to action)
-  - text: "Chào bạn! Hiện shop đang có nhiều mẫu áo mới về, bạn có muốn xem qua không?"
+  - text: "Chào bạn! Hiện shop đang có nhiều mẫu thiết bị điện tử mới về, bạn có muốn xem qua không?"
   - text: "Xin chào! Đừng quên hỏi shop về chương trình khuyến mãi hôm nay nhé!"
 
   utter_cheer_up:
@@ -105,8 +105,8 @@ responses:
   - text: "Mình là robot nhưng trái tim mình luôn hướng về khách hàng của Gemini Shop! ❤️ Bạn cần mình giúp gì nào?"
   - text: "Em là AI 24/7 của shop đây ạ. Tuy không phải người thật nhưng em hứa sẽ tư vấn nhiệt tình nhất có thể! 🦾"   
     # Nhóm tập trung vào năng lực (Gợi ý khách hàng đặt câu hỏi)
-  - text: "Mình là chatbot Gemini! Mình biết rất nhiều về các loại áo thun và quần jean. Bạn muốn hỏi giá sản phẩm nào không?"
-  - text: "Chào bạn! Mình là nhân viên ảo của shop. Mình có thể giúp bạn tìm mã giảm giá hoặc kiểm tra đơn hàng đó!"
+  - text: "Mình là chatbot Gemini! Mình biết rất nhiều về các loại thiết bị điện tử. Bạn muốn hỏi giá sản phẩm nào không?"
+  - text: "Chào bạn! Mình là nhân viên ảo của shop. Mình có thể giúp bạn tìm sản phẩm hoặc kiểm tra giá sản phẩm!"
 
 
 

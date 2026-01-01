@@ -45,8 +45,12 @@ class ActionGetProductPrice(Action):
         # Lấy tên sản phẩm khách vừa nhắc tới (Entity: product_name)
         raw_product_name = next(tracker.get_latest_entity_values("product_name"), None)
 
+        # lục lại trong bộ nhớ (Slot) nếu không có entity
         if not raw_product_name:
-            dispatcher.utter_message(text="Bạn muốn hỏi giá của sản phẩm nào ạ? (Ví dụ: áo thun, quần jean)")
+            raw_product_name = tracker.get_slot("product_name")
+
+        if not raw_product_name:
+            dispatcher.utter_message(text="Bạn muốn hỏi giá của sản phẩm nào ạ? (Ví dụ: iphone, apple)")
             return []
 
         search_term = unidecode(raw_product_name).lower()
@@ -124,6 +128,14 @@ class ActionGetProductPrice(Action):
                 dispatcher.utter_message(text=msg)
             else:
                 dispatcher.utter_message(text=f"Tiếc quá, hiện tại shop chưa có thông tin giá cho '{raw_product_name}' ạ.")
+                # Gợi ý khách xem các sản phẩm khác bằng nút bấm
+                buttons = [
+                    {"title": "📦 Xem danh sách sản phẩm", "payload": "/ask_all_products"},
+                    {"title": "🔍 Thử tìm tên khác", "payload": "/ask_description"},
+                    {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
+                ]
+                dispatcher.utter_message(text="Bạn có muốn xem qua những mẫu máy đang sẵn hàng tại shop không?", buttons=buttons)
+                return [SlotSet("product_name", None)] # Xóa Slot để tránh nhầm lẫn cho câu hỏi sau
 
         except mysql.connector.Error as err:
             dispatcher.utter_message(text="Rất xin lỗi, hệ thống dữ liệu của shop đang gặp chút trục trặc. Bạn thử lại sau nhé!")
@@ -146,6 +158,10 @@ class ActionGetProductDescription(Action):
 
         # 1. Lấy thực thể product_name
         raw_product_name = next(tracker.get_latest_entity_values("product_name"), None)
+
+        # lục lại trong bộ nhớ (Slot) nếu không có entity
+        if not raw_product_name:
+            raw_product_name = tracker.get_slot("product_name")
 
         if not raw_product_name:
             dispatcher.utter_message(text="Bạn muốn xem thông tin chi tiết của sản phẩm nào ạ?")
@@ -227,6 +243,14 @@ class ActionGetProductDescription(Action):
                 dispatcher.utter_message(text=msg)
             else:
                 dispatcher.utter_message(text=f"Xin lỗi, shop chưa có thông tin mô tả cho sản phẩm '{raw_product_name}'.")
+                # Gợi ý khách xem các sản phẩm khác bằng nút bấm
+                buttons = [
+                    {"title": "📦 Xem danh sách sản phẩm", "payload": "/ask_all_products"},
+                    {"title": "🔍 Thử tìm tên khác", "payload": "/ask_description"},
+                    {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
+                ]
+                dispatcher.utter_message(text="Bạn có muốn xem qua những mẫu máy đang sẵn hàng tại shop không?", buttons=buttons)
+                return [SlotSet("product_name", None)] # Xóa Slot để tránh nhầm lẫn cho câu hỏi sau
 
         except mysql.connector.Error as err:
             dispatcher.utter_message(text="Hệ thống đang gặp lỗi kết nối dữ liệu.")

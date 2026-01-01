@@ -261,7 +261,10 @@ nlu:
   examples: |
     - cái [Apple MacBook Air M4 (13 inch, 2025)](product_name) bao nhiêu tiền
     - cái [Apple MacBook Pro M5(13 inch, 2025)](product_name) bao nhiêu tiền
+    - cái [iPhone 15 Pro Max](product_name) bao nhiêu tiền
     - [Apple MacBook](product_name) giá sao shop
+    - [iPhone 15 Pro Max](product_name) giá sao shop
+    - [iPhone 15 Pro](product_name) giá sao shop
     - cho mình xin giá [laptop](product_name)
     - [Apple MacBook Air M4 (13 inch, 2025)](product_name) bao nhiêu
     - [Apple MacBook Air M4](product_name) bao nhiêu
@@ -272,12 +275,18 @@ nlu:
     - cho mình hỏi giá
     - [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá nhiêu vậy
     - [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá ntn shop ơi
+    - [iPhone 15 Pro Max](product_name) giá ntn shop ơi
+    - [iPhone 15 Pro](product_name) giá ntn shop ơi
     - cho hỏi [laptop](product_name) bao nhiêu tiền một cái
     - giá [laptop](product_name) thế nào bạn
     - check giá giúp mình mẫu [laptop](product_name) với
+    - check giá giúp mình mẫu [iPhone 15 Pro Max](product_name) với
+    - check giá giúp mình mẫu [iPhone](product_name) với
     - shop ơi [Apple MacBook](product_name) nhiêu xiền
     - [Apple MacBook](product_name) bn ạ
     - mình muốn biết giá [laptop](product_name)
+    - mình muốn biết giá [iPhone 15 Pro Max](product_name)
+    - mình muốn biết giá [iPhone](product_name)
     - giá rổ cái [Apple MacBook](product_name) này sao shop
     - cái này [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá cả sao
     - [Apple MacBook](product_name) có đắt không shop
@@ -304,6 +313,10 @@ nlu:
     - thông tin chi tiết của [laptop](product_name)
     - thông tin của [laptop](product_name)
     - thông tin [laptop](product_name)
+    - thông tin chi tiết của [iPhone 15 Pro Max](product_name)
+    - thông tin chi tiết của [iPhone 15 Pro](product_name)
+    - thông tin chi tiết của [iPhone 15](product_name)
+    - thông tin chi tiết của [iPhone](product_name)
     - [Apple MacBook Air M4 (13 inch, 2025)](product_name) này trông như thế nào
     - chất liệu của [Apple MacBook](product_name) là gì
     - cho mình xem chi tiết [laptop](product_name)
@@ -322,9 +335,16 @@ nlu:
     - thong tin cua [Apple MacBook Air](product_name)
     - [Apple MacBook Air](product_name) la san pham j
     - [Apple MacBook Air](product_name) la san pham gi vay
+    - [iPhone 15 Pro Max](product_name) la san pham gi vay
+    - [iPhone 15 Pro](product_name) la san pham gi vay
+    - [iPhone 15](product_name) la san pham gi vay
+    - [iPhone](product_name) la san pham gi vay
     - cho mình xin tu van ve [Apple MacBook Air M4](product_name)
     - [MacBook Air 13 inch](product_name) co dac diem noi bat gi khong
     - [Apple MacBook Pro 14 inch](product_name) co tinh nang vuot troi nao khong
+    - [iPhone 15 Pro Max](product_name) co tinh nang vuot troi nao khong
+    - [iPhone 15](product_name) co tinh nang vuot troi nao khong
+    - [iPhone](product_name) co tinh nang vuot troi nao khong
 
 - intent: ask_product_count
   examples: |
@@ -398,6 +418,9 @@ nlu:
     - Apple MacBook
     - Apple
     - iPhone 15 Pro Max
+    - iPhone 15 Pro
+    - iPhone 15
+    - iPhone
 
 - synonym: Apple
   examples: |
