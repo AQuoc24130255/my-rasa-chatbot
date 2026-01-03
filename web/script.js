@@ -30,26 +30,59 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: "smooth" });
     }
 
-    async function sendMessage() {
-        const message = userInput.value.trim();
-        if (!message) return;
+    // 3. HIỂN THỊ NÚT BẤM (QUAN TRỌNG)
+    function appendButtons(buttons) {
+        const btnContainer = document.createElement("div");
+        btnContainer.className = "button-container";
 
-        appendMessage(message, "user");
-        userInput.value = "";
+        buttons.forEach(button => {
+            const btn = document.createElement("button");
+            btn.className = "chat-btn";
+            btn.innerText = button.title;
+            
+            // Khi nhấn nút, gửi payload ẩn về Rasa
+            btn.addEventListener("click", () => {
+                appendMessage(button.title, "user"); // Hiện tên nút lên màn hình như tin nhắn người dùng
+                sendToRasa(button.payload);         // Gửi payload (ví dụ: /ask_all_products)
+                btnContainer.remove();               // Xóa cụm nút sau khi đã chọn
+            });
+            
+            btnContainer.appendChild(btn);
+        });
 
+        chatBox.appendChild(btnContainer);
+        chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: "smooth" });
+    }
+
+    // 4. LOGIC GỬI DỮ LIỆU ĐẾN RASA
+    async function sendToRasa(message) {
         try {
-            const response = await fetch("https://ideal-trout-r7p69j7v5gwf594w-5005.app.github.dev/webhooks/rest/webhook", {
+            const response = await fetch(RASA_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ sender: "user_web", message: message }),
             });
             const data = await response.json();
-            data.forEach(res => { if (res.text) appendMessage(res.text, "bot"); });
+            
+            data.forEach(res => { 
+                if (res.text) appendMessage(res.text, "bot"); 
+                if (res.buttons) appendButtons(res.buttons); // Kiểm tra và hiển thị nút bấm
+            });
         } catch (error) {
             appendMessage("Lỗi kết nối Rasa server!", "bot");
         }
     }
 
-    sendBtn.addEventListener("click", sendMessage);
-    userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
+    // 5. XỬ LÝ KHI NGƯỜI DÙNG GÕ PHÍM
+    function handleSend() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        appendMessage(message, "user");
+        userInput.value = "";
+        sendToRasa(message);
+    }
+
+    sendBtn.addEventListener("click", handleSend);
+    userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") handleSend(); });
 });

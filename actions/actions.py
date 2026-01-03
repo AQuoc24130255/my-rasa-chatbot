@@ -32,6 +32,7 @@ import mysql.connector
 from unidecode import unidecode
 import re
 from thefuzz import fuzz, process
+from rasa_sdk.events import SlotSet
 
 
 class ActionGetProductPrice(Action):
@@ -59,6 +60,8 @@ class ActionGetProductPrice(Action):
         if not keywords:
             dispatcher.utter_message(text="Shop chưa rõ tên sản phẩm bạn cần hỏi.")
             return []
+
+        events = []
 
         try:
             # Kết nối Database (Dùng IP 127.0.0.1 để tránh lỗi socket)
@@ -115,6 +118,8 @@ class ActionGetProductPrice(Action):
                 name = item['name']
                 price = "{:,.0f}".format(item['price']) # Định dạng 150,000
                 dispatcher.utter_message(text=f"Dạ, sản phẩm {name} hiện có giá là {price} VNĐ ạ.")
+                # Lưu tên sản phẩm chuẩn vào slot để lần sau khách hỏi "cấu hình nó" thì chính xác hơn
+                events.append(SlotSet("product_name", item['name']))
             elif len(results) > 1:
                 best_match = results[0]
                 names = ", ".join([r['name'] for r in results[1:]])
@@ -126,16 +131,18 @@ class ActionGetProductPrice(Action):
                        f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
                 
                 dispatcher.utter_message(text=msg)
+                events.append(SlotSet("product_name", best_match['name']))
             else:
-                dispatcher.utter_message(text=f"Tiếc quá, hiện tại shop chưa có thông tin giá cho '{raw_product_name}' ạ.")
+                msg = (f"Tiếc quá, hiện tại shop chưa có thông tin giá cho '{raw_product_name}' ạ.\n\n"
+                    "Bạn có muốn xem qua những mẫu máy đang sẵn hàng tại shop không?")
                 # Gợi ý khách xem các sản phẩm khác bằng nút bấm
                 buttons = [
                     {"title": "📦 Xem danh sách sản phẩm", "payload": "/ask_all_products"},
-                    {"title": "🔍 Thử tìm tên khác", "payload": "/ask_description"},
+                    {"title": "🔍 Thử tìm tên khác", "payload": "/ask_price"},
                     {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
                 ]
-                dispatcher.utter_message(text="Bạn có muốn xem qua những mẫu máy đang sẵn hàng tại shop không?", buttons=buttons)
-                return [SlotSet("product_name", None)] # Xóa Slot để tránh nhầm lẫn cho câu hỏi sau
+                dispatcher.utter_message(text=msg, buttons=buttons)
+                events.append(SlotSet("product_name", None))
 
         except mysql.connector.Error as err:
             dispatcher.utter_message(text="Rất xin lỗi, hệ thống dữ liệu của shop đang gặp chút trục trặc. Bạn thử lại sau nhé!")
@@ -145,7 +152,7 @@ class ActionGetProductPrice(Action):
                 cursor.close()
                 connection.close()
 
-        return []
+        return events
 
 class ActionGetProductDescription(Action):
     def name(self) -> Text:
@@ -173,6 +180,8 @@ class ActionGetProductDescription(Action):
         if not keywords:
             dispatcher.utter_message(text="Shop chưa rõ tên sản phẩm bạn cần hỏi.")
             return []
+
+        events = []
 
         try:
             # 2. Kết nối MySQL
@@ -231,6 +240,7 @@ class ActionGetProductDescription(Action):
                 name = item['name']
                 desc = item['description']
                 dispatcher.utter_message(text=f"Thông tin chi tiết về {name}: {desc}")
+                events.append(SlotSet("product_name", item['name']))
             elif len(results) > 1:
                 best_match = results[0]
                 short_desc = (best_match['description'][:150] + '...') if len(best_match['description']) > 150 else best_match['description']
@@ -241,6 +251,7 @@ class ActionGetProductDescription(Action):
                        f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
                 
                 dispatcher.utter_message(text=msg)
+                events.append(SlotSet("product_name", best_match['name']))
             else:
                 dispatcher.utter_message(text=f"Xin lỗi, shop chưa có thông tin mô tả cho sản phẩm '{raw_product_name}'.")
                 # Gợi ý khách xem các sản phẩm khác bằng nút bấm
@@ -250,7 +261,7 @@ class ActionGetProductDescription(Action):
                     {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
                 ]
                 dispatcher.utter_message(text="Bạn có muốn xem qua những mẫu máy đang sẵn hàng tại shop không?", buttons=buttons)
-                return [SlotSet("product_name", None)] # Xóa Slot để tránh nhầm lẫn cho câu hỏi sau
+                events.append(SlotSet("product_name", None))
 
         except mysql.connector.Error as err:
             dispatcher.utter_message(text="Hệ thống đang gặp lỗi kết nối dữ liệu.")
@@ -260,7 +271,7 @@ class ActionGetProductDescription(Action):
                 cursor.close()
                 connection.close()
 
-        return []
+        return events
 
 class ActionGetProductCount(Action):
     def name(self) -> Text:

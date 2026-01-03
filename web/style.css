@@ -140,6 +140,44 @@ nav ul li a:hover { color: var(--primary-color); }
 .chat-footer { display: flex; padding: 10px; border-top: 1px solid #eee; }
 .chat-footer input { flex: 1; border: none; outline: none; padding: 5px; }
 #send-btn { background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 18px; }
+/* --- NÚT BẤM TỪ CHATBOT --- */
+
+/* Container chứa các nút bấm để các nút nằm ngang và tự xuống dòng */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 5px 0 10px 0;
+    align-self: flex-start; /* Căn lề trái theo tin nhắn của Bot */
+    max-width: 90%;
+}
+
+/* Định dạng từng nút bấm đơn lẻ */
+.chat-btn {
+    background-color: var(--white);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Hiệu ứng khi di chuột qua nút */
+.chat-btn:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Hiệu ứng khi nhấn nút */
+.chat-btn:active {
+    transform: translateY(0);
+}
 /* --- FOOTER --- */
 footer {
     background: var(--dark-color);
