@@ -296,6 +296,24 @@ nlu:
     - cho mình xin giá [Apple MacBook Air M4](product_name)
     - [MacBook Air 13 inch](product_name) giá sao
     - [Apple MacBook Pro 14 inch](product_name) giá bao nhiêu
+    - [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name) bao nhiêu tiền?
+    - Cho mình xin giá bộ [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name)?
+    - Shop ơi, [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name) giá ntn vậy?
+    - Cái [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) này giá cả sao shop?
+    - Check giá giúp mình mẫu [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) với.
+    - [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) giá ntn shop ơi, có đắt không?
+    - Màn hình [LG UltraGear 27GR95QE-B OLED](product_name) bao nhiêu tiền?
+    - Cho mình xin giá [LG UltraGear 27GR95QE-B OLED](product_name) ạ.
+    - [LG UltraGear 27GR95QE-B OLED](product_name) giá sao shop?
+    - Bộ RAM [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) bao nhiêu tiền một bộ?
+    - [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) giá ntn bạn ơi?
+    - Check giá giúp mình mẫu [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) với.
+    - Cái card màn hình [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) giá bao nhiêu tiền?
+    - Giá rổ cái [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) này sao shop?
+    - Mình muốn biết giá [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name).
+    - Màn hình [Dell Alienware AW3423DWF QD-OLED](product_name) bao nhiêu?
+    - Giá của [Dell Alienware AW3423DWF QD-OLED](product_name) là bao nhiêu?
+    - Tư vấn giá [Dell Alienware AW3423DWF QD-OLED](product_name) cho mình nhé.
 
 - intent: ask_description
   examples: |
@@ -421,6 +439,43 @@ nlu:
     - iPhone 15 Pro
     - iPhone 15
     - iPhone
+    - Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz
+    - Corsair Vengeance RGB DDR5 32GB (2x16GB)
+    - Corsair Vengeance RGB DDR5 32GB
+    - Corsair Vengeance RGB DDR5 
+    - Corsair Vengeance RGB 
+    - Corsair Vengeance 
+    - Corsair
+    - ASUS ROG Strix GeForce RTX 5070 Ti
+    - ASUS ROG Strix GeForce RTX 5070
+    - ASUS ROG Strix GeForce RTX
+    - ASUS ROG Strix GeForce
+    - ASUS ROG Strix
+    - ASUS ROG
+    - ASUS
+    - LG UltraGear 27GR95QE-B OLED
+    - LG UltraGear 27GR95QE-B
+    - LG UltraGear
+    - LG
+    - G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz
+    - G.Skill Trident Z5 RGB DDR5 32GB (2x16GB)
+    - G.Skill Trident Z5 RGB DDR5 32GB
+    - G.Skill Trident Z5 RGB DDR5
+    - G.Skill Trident Z5 RGB
+    - G.Skill Trident Z5
+    - G.Skill Trident
+    - G.Skill
+    - GIGABYTE AORUS GeForce RTX 5080 MASTER 16G
+    - GIGABYTE AORUS GeForce RTX 5080 MASTER
+    - GIGABYTE AORUS GeForce RTX 5080
+    - GIGABYTE AORUS GeForce RTX
+    - GIGABYTE AORUS GeForce
+    - GIGABYTE AORUS
+    - GIGABYTE
+    - Dell Alienware AW3423DWF QD-OLED
+    - Dell Alienware AW3423DWF
+    - Dell Alienware
+    - Dell
 
 - synonym: Apple
   examples: |
