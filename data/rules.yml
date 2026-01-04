@@ -59,3 +59,24 @@ rules:
   steps:
   - intent: ask_all_products
   - action: action_show_all_products
+
+- rule: Đáp lại yêu cầu đếm sản phẩm theo loại
+  steps:
+  - intent: ask_count_by_type
+  - action: action_count_product_by_type
+
+- rule: Hiển thị sản phẩm theo loại
+  steps:
+  - intent: show_products_by_type
+  - action: action_show_products_by_type
+
+- rule: Trả lời về các loại sản phẩm đang có
+  steps:
+  - intent: ask_all_categories
+  - action: action_count_all_types
+
+- rule: Hiển thị danh mục khi khách hỏi
+  steps:
+    - intent: ask_what_you_sell
+    - action: action_list_product_types
+    

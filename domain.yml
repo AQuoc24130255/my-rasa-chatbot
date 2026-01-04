@@ -14,8 +14,11 @@ intents:
   - ask_description
   - ask_all_products
   - ask_product_count
+  - ask_what_you_sell
+
 entities:
   - product_name # <-- Khai báo để Bot nhận diện "áo thun", "quần jean"
+  - product_type
 
 slots:
   product_name: # <-- Lưu trữ tên sản phẩm khách hỏi để gửi cho MySQL
@@ -24,6 +27,12 @@ slots:
     mappings:
       - type: from_entity
         entity: product_name
+  product_type:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: product_type
 
 responses:
   utter_greet:
@@ -127,6 +136,10 @@ actions:
   - action_get_product_description
   - action_get_product_count
   - action_show_all_products
+  - action_count_product_by_type
+  - action_show_products_by_type
+  - action_count_all_types
+  - action_list_product_types
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

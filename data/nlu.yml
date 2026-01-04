@@ -302,9 +302,9 @@ nlu:
     - Cái [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) này giá cả sao shop?
     - Check giá giúp mình mẫu [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) với.
     - [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) giá ntn shop ơi, có đắt không?
-    - Màn hình [LG UltraGear 27GR95QE-B OLED](product_name) bao nhiêu tiền?
-    - Cho mình xin giá [LG UltraGear 27GR95QE-B OLED](product_name) ạ.
-    - [LG UltraGear 27GR95QE-B OLED](product_name) giá sao shop?
+    - Màn hình [ASUS ROG Swift OLED PG32UCDM](product_name) bao nhiêu tiền?
+    - Cho mình xin giá [ASUS ROG Swift OLED PG32UCDM](product_name) ạ.
+    - [ASUS ROG Swift OLED PG32UCDM](product_name) giá sao shop?
     - Bộ RAM [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) bao nhiêu tiền một bộ?
     - [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) giá ntn bạn ơi?
     - Check giá giúp mình mẫu [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) với.
@@ -363,6 +363,24 @@ nlu:
     - [iPhone 15 Pro Max](product_name) co tinh nang vuot troi nao khong
     - [iPhone 15](product_name) co tinh nang vuot troi nao khong
     - [iPhone](product_name) co tinh nang vuot troi nao khong
+    - [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name) có những thông số kỹ thuật chính nào?
+    - Cho mình xin thông tin chi tiết về bộ [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name)?
+    - Shop ơi, [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name) có đặc điểm gì nổi bật vậy?
+    - Cái [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) này có hiệu năng ra sao shop?
+    - Check thông số kỹ thuật giúp mình mẫu [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) với.
+    - [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) có những tính năng gì shop ơi, có mạnh không?
+    - Màn hình [ASUS ROG Swift OLED PG32UCDM](product_name) có độ phân giải bao nhiêu?
+    - Cho mình xin thông tin chi tiết về [ASUS ROG Swift OLED PG32UCDM](product_name) ạ.
+    - [ASUS ROG Swift OLED PG32UCDM](product_name) có tần số quét sao shop?
+    - Bộ RAM [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) có độ trễ (latency) bao nhiêu?
+    - [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) có tương thích với mainboard nào bạn ơi?
+    - Check thông tin giúp mình mẫu [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) với.
+    - Cái card màn hình [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) có bao nhiêu nhân CUDA?
+    - Thông số kỹ thuật cái [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) này sao shop?
+    - Mình muốn biết yêu cầu nguồn điện của [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name).
+    - Màn hình [Dell Alienware AW3423DWF QD-OLED](product_name) có kích thước bao nhiêu?
+    - Đặc điểm của [Dell Alienware AW3423DWF QD-OLED](product_name) là gì?
+    - Tư vấn về công nghệ màn hình [Dell Alienware AW3423DWF QD-OLED](product_name) cho mình nhé.
 
 - intent: ask_product_count
   examples: |
@@ -394,6 +412,30 @@ nlu:
     - cho xem catalogue linh kiện của shop
     - những mẫu linh kiện mới nhất hiện nay
 
+- intent: ask_count_by_type
+  examples: |
+    - Shop có bao nhiêu mẫu [laptop](product_type) vậy?
+    - Cho mình hỏi hiện tại có tổng cộng bao nhiêu mã [màn hình](product_type)?
+    - Bên mình đang bán bao nhiêu loại [card](product_type) đồ họa thế shop?
+    - Có bao nhiêu dòng [RAM](product_type) DDR5 đang sẵn hàng?
+    - Shop liệt kê số lượng các mẫu [màn hình](product_type) OLED đang có đi
+    - Shop cho xin số lượng các loại [máy tính](product_type) xách tay M4 hiện nay với.
+    - Co bao nhieu mau [ram](product_type) tat ca vay shop?
+    - Thong ke giup minh co bao nhieu loai [man hinh](product_type) cong dang ban.
+
+- intent: ask_all_categories
+  examples: |
+    - Shop có bao nhiêu loại mặt hàng?
+    - Ở đây bán những loại gì?
+    - Cho mình xem các danh mục sản phẩm
+    - Các dòng sản phẩm bên mình là gì?
+    - Có tổng cộng bao nhiêu loại sản phẩm?
+    - Shop co bao nhieu loai mat hang?
+    - O day ban nhung loai gi?
+    - Cho minh xem cac danh muc san pham
+    - Cac dong san pham ben minh la gi?
+    - Co tong cong bao nhieu loai san pham?
+
 - intent: ask_all_products
   examples: |
     - shop có những mẫu nào vậy
@@ -424,6 +466,35 @@ nlu:
     - cho anh xem toan bo san pham ben em
     - shop con nhung loai ic hay chip nao khong
 
+- intent: show_products_by_type
+  examples: |
+    - Cho tôi xem danh sách [laptop](product_type)
+    - Ở đây có những mẫu [màn hình](product_type) nào?
+    - Liệt kê các loại [chuột](product_type)
+    - Mình muốn mua [bàn phím](product_type)
+    - Cho toi xem danh sach [laptop](product_type)
+    - O day co nhung mau [man hinh](product_type) nao?
+    - Liet ke cac loai [ram](product_type)
+    - Minh muon mua loai [card](product_type) co nhung san pham nao.
+    - Shop co nhung loai [ram](product_type) nao vay?
+    - Cho minh xem cac mau [ram](product_type) ddr5 dang co.
+    - Cac loai [card](product_type) do hoa ben minh gom nhung ma nao?
+    - Liệt kê giúp mình danh sách [card](product_type) đang có hàng
+    - Hien tai shop dang ban nhung dong [card](product_type) man hinh nao?
+
+- intent: ask_what_you_sell
+  examples: |
+    - Shop bán những gì?
+    - Ở đây có những loại sản phẩm nào?
+    - Cho mình xem danh mục sản phẩm
+    - Các bạn kinh doanh những mặt hàng nào?
+    - List các loại đồ điện tử đang bán đi
+    - Shop ban nhung gi?
+    - O day co nhung loai san pham nao?
+    - Cho minh xem danh muc san pham
+    - Cac ban kinh doanh nhung mat hang nao?
+    - List cac loai do dien tu dang ban di
+
 - lookup: product_name
   examples: |
     - Apple MacBook Air M4 (13 inch, 2025)
@@ -453,10 +524,11 @@ nlu:
     - ASUS ROG Strix
     - ASUS ROG
     - ASUS
-    - LG UltraGear 27GR95QE-B OLED
-    - LG UltraGear 27GR95QE-B
-    - LG UltraGear
-    - LG
+    - ASUS ROG Swift OLED PG32UCDM
+    - ASUS ROG Swift OLED
+    - ASUS ROG Swift
+    - ASUS ROG
+    - ASUS
     - G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz
     - G.Skill Trident Z5 RGB DDR5 32GB (2x16GB)
     - G.Skill Trident Z5 RGB DDR5 32GB
@@ -476,6 +548,13 @@ nlu:
     - Dell Alienware AW3423DWF
     - Dell Alienware
     - Dell
+
+- lookup: product_type
+  examples: |
+    - laptop
+    - RAM
+    - màn hình
+    - card
 
 - synonym: Apple
   examples: |
@@ -499,3 +578,6 @@ nlu:
     - Ipone
     - Ifone
 
+- regex: model_code
+  examples: |
+    - [a-zA-Z0-9]{2,}-[a-zA-Z0-9]{2,}  # Khớp với dạng như 27GR95QE-B
