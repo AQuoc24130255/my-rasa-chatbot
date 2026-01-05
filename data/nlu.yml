@@ -336,12 +336,11 @@ nlu:
     - thông tin chi tiết của [iPhone 15](product_name)
     - thông tin chi tiết của [iPhone](product_name)
     - [Apple MacBook Air M4 (13 inch, 2025)](product_name) này trông như thế nào
-    - chất liệu của [Apple MacBook](product_name) là gì
     - cho mình xem chi tiết [laptop](product_name)
     - [Apple MacBook Air M4 (13 inch, 2025)](product_name) này làm từ vải gì shop?
     - shop ơi, [Apple MacBook](product_name) này form gì thế
     - cho mình biết thêm về [laptop](product_name) nhé
-    - đặc điểm của [Apple MacBook Air M4 (13 inch, 2025)](product_name) là gì
+    - đặc điểm của [Apple MacBook Air M4 (13 inch, 2025)](product_name)
     - [Apple MacBook](product_name) này mặc có co giãn không
     - mình muốn xem thông số [laptop](product_name)
     - chi tiết [Apple MacBook Air M4 (13 inch, 2025)](product_name)
@@ -376,41 +375,59 @@ nlu:
     - [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) có tương thích với mainboard nào bạn ơi?
     - Check thông tin giúp mình mẫu [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) với.
     - Cái card màn hình [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) có bao nhiêu nhân CUDA?
-    - Thông số kỹ thuật cái [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) này sao shop?
+    - Thông số kỹ thuật của [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name)?
     - Mình muốn biết yêu cầu nguồn điện của [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name).
     - Màn hình [Dell Alienware AW3423DWF QD-OLED](product_name) có kích thước bao nhiêu?
-    - Đặc điểm của [Dell Alienware AW3423DWF QD-OLED](product_name) là gì?
+    - Đặc điểm nổi bật của [Dell Alienware AW3423DWF QD-OLED](product_name)?
     - Tư vấn về công nghệ màn hình [Dell Alienware AW3423DWF QD-OLED](product_name) cho mình nhé.
 
-- intent: ask_product_count
+- intent: ask_product_type
   examples: |
-    - shop có bao nhiêu mẫu máy tính
-    - có tất cả bao nhiêu loại sản phẩm
-    - shop đang bán bao nhiêu mẫu tất cả
-    - cho mình xem tổng số mẫu mã hiện có
-    - shop co nhung mau nao vay
-    - liet ke tat ca san pham di shop
-    - cho minh xem danh sach cac mau dang co
-    - shop ban nhung gi the
-    - hien tai co nhung mau ma nao
-    - danh muc san pham cua shop
-    - xem cac mau shop dang ban
-    - cua hang co bao nhieu loai linh kien vay
-    - ben minh dang co nhung dong san pham dien tu nao
-    - cac mat hang linh kien dang san co la gi
-    - liet ke danh sach do dien tu dang ban
-    - cho xem catalogue linh kien cua shop
-    - nhung mau linh kien moi nhat hien nay
-    - kho con nhung loai phu kien dien tu nao
-    - cho minh xem tat ca linh kien shop co
-    - cua hang co nhung modem hay vi mach nao
-    - ben em co nhung dong san pham nao dang kinh doanh
-    - cửa hàng mình có bao nhiêu loại linh kiện vậy
-    - bên mình đang có những dòng sản phẩm điện tử nào
-    - các mặt hàng linh kiện đang sẵn có là gì
-    - liệt kê danh sách đồ điện tử đang bán
-    - cho xem catalogue linh kiện của shop
-    - những mẫu linh kiện mới nhất hiện nay
+    - [iphone 15](product_name) là loại gì?
+    - [macbook pro](product_name) thuộc dòng nào vậy shop?
+    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) thuộc dòng nào vậy shop?
+    - [iPhone 15 Pro Max](product_name) thuộc dòng nào vậy shop?
+    - [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name) thuộc dòng nào vậy shop?
+    - [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) thuộc dòng nào vậy shop?
+    - [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) thuộc dòng nào vậy shop?
+    - [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) thuộc dòng nào vậy shop?
+    - [Dell Alienware AW3423DWF QD-OLED](product_name) thuộc dòng nào vậy shop?
+    - [ASUS ROG Swift OLED PG32UCDM](product_name) thuộc dòng nào vậy shop
+    - cho mình hỏi [dell xps](product_name) thuộc phân khúc nào?
+    - cái [ipad air](product_name) này là máy tính bảng hay gì ạ?
+    - dòng của [samsung s24](product_name) là gì?
+    - [màn hình dell](product_name) thuộc nhóm sản phẩm nào?
+    - [chuột logitech](product_name) là linh kiện hay phụ kiện?
+    - cho hỏi [bàn phím cơ](product_name) thuộc loại nào
+    - cho hỏi [Apple MacBook Air M4 (13 inch, 2025)](product_name) thuộc loại nào
+    - cho hỏi [iPhone 15 Pro Max](product_name) thuộc loại nào
+    - cho hỏi [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name) thuộc loại nào
+    - cho hỏi [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) thuộc loại nào
+    - cho hỏi [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) thuộc loại nào
+    - cho hỏi [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) thuộc loại nào
+    - cho hỏi [Dell Alienware AW3423DWF QD-OLED](product_name) thuộc loại nào
+    - cho hỏi [ASUS ROG Swift OLED PG32UCDM](product_name) thuộc loại nào
+    - thông tin dòng máy [thinkpad x1](product_name)
+    - [apple watch](product_name) thuộc danh mục nào của shop?
+    - [iphone 15](product_name) la loai gi?
+    - [macbook pro](product_name) thuoc dong nao vay shop?
+    - [apple macbook air m4](product_name) thuoc dong nao
+    - [iphone 15 pro max](product_name) la loai gi vay
+    - [corsair vengeance rgb ddr5](product_name) thuoc loai nao
+    - [asus rog strix rtx 5070 ti](product_name) la card man hinh hay gi
+    - [g.skill trident z5 rgb](product_name) thuoc phan khuc nao
+    - [gigabyte aorus rtx 5080](product_name) la dong nao
+    - [dell alienware aw3423dwf](product_name) thuoc nhom nao
+    - [asus rog swift oled](product_name) la man hinh ha shop
+    - cho minh hoi [dell xps](product_name) thuoc phan khuc nao?
+    - cai [ipad air](product_name) nay la may tinh bang hay gi?
+    - dong cua [samsung s24](product_name) la gi
+    - [man hinh dell](product_name) thuoc nhom san pham nao
+    - [chuot logitech](product_name) la linh kien hay phu kien
+    - cho hoi [ban phim co](product_name) thuoc loai nao
+    - [tai nghe sony](product_name) thuoc dong nao vay
+    - [ban phim akko](product_name) la loai gi
+    - [nguon may tinh](product_name) thuoc danh muc nao
 
 - intent: ask_count_by_type
   examples: |
@@ -422,49 +439,6 @@ nlu:
     - Shop cho xin số lượng các loại [máy tính](product_type) xách tay M4 hiện nay với.
     - Co bao nhieu mau [ram](product_type) tat ca vay shop?
     - Thong ke giup minh co bao nhieu loai [man hinh](product_type) cong dang ban.
-
-- intent: ask_all_categories
-  examples: |
-    - Shop có bao nhiêu loại mặt hàng?
-    - Ở đây bán những loại gì?
-    - Cho mình xem các danh mục sản phẩm
-    - Các dòng sản phẩm bên mình là gì?
-    - Có tổng cộng bao nhiêu loại sản phẩm?
-    - Shop co bao nhieu loai mat hang?
-    - O day ban nhung loai gi?
-    - Cho minh xem cac danh muc san pham
-    - Cac dong san pham ben minh la gi?
-    - Co tong cong bao nhieu loai san pham?
-
-- intent: ask_all_products
-  examples: |
-    - shop có những mẫu nào vậy
-    - liệt kê tất cả sản phẩm đi shop
-    - cho mình xem danh sách các mẫu đang có
-    - shop bán những gì thế
-    - hiện tại có những mẫu mã nào
-    - danh mục sản phẩm của shop
-    - xem các mẫu shop đang bán
-    - cửa hàng có những loại linh kiện nào
-    - danh sách đồ điện tử đang sẵn có
-    - cho xem catalogue linh kiện điện tử
-    - bên mình đang kinh doanh những mặt hàng nào
-    - các dòng vi mạch hiện có tại cửa hàng
-    - cho anh xem toàn bộ sản phẩm bên em
-    - shop co nhung mau nao vay
-    - liet ke tat ca san pham di shop
-    - cho minh xem danh sach cac mau dang co
-    - shop ban nhung gi the
-    - hien tai co nhung mau ma nao
-    - danh muc san pham cua shop
-    - xem cac mau shop dang ban
-    - cua hang co nhung loai linh kien nao
-    - danh sach do dien tu dang san co
-    - cho xem catalogue linh kien dien tu
-    - ben minh dang kinh doanh nhung mat hang nao
-    - cac dong vi mach hien co tai cua hang
-    - cho anh xem toan bo san pham ben em
-    - shop con nhung loai ic hay chip nao khong
 
 - intent: show_products_by_type
   examples: |
@@ -482,18 +456,26 @@ nlu:
     - Liệt kê giúp mình danh sách [card](product_type) đang có hàng
     - Hien tai shop dang ban nhung dong [card](product_type) man hinh nao?
 
-- intent: ask_what_you_sell
+- intent: browse_shop
   examples: |
-    - Shop bán những gì?
-    - Ở đây có những loại sản phẩm nào?
-    - Cho mình xem danh mục sản phẩm
-    - Các bạn kinh doanh những mặt hàng nào?
-    - List các loại đồ điện tử đang bán đi
-    - Shop ban nhung gi?
-    - O day co nhung loai san pham nao?
-    - Cho minh xem danh muc san pham
-    - Cac ban kinh doanh nhung mat hang nao?
-    - List cac loai do dien tu dang ban di
+    - Shop có bao nhiêu mẫu máy tính và tất cả bao nhiêu loại sản phẩm?
+    - Shop đang bán bao nhiêu mẫu tất cả?
+    - Cho mình xem tổng số mẫu mã hiện có.
+    - Cửa hàng mình có bao nhiêu loại linh kiện vậy?
+    - Có tổng cộng bao nhiêu loại sản phẩm?
+    - Cho mình xem danh mục sản phẩm của shop.
+    - Cho xem catalogue linh kiện điện tử của shop.
+    - Liệt kê danh sách đồ điện tử đang bán.
+    - Bên mình đang kinh doanh những dòng sản phẩm/mặt hàng nào?
+    - Các mặt hàng linh kiện đang sẵn có là gì?
+    - Những mẫu linh kiện mới nhất hiện nay là gì?
+    - Kho còn những loại phụ kiện điện tử nào?
+    - Cửa hàng có những loại modem, vi mạch, IC hay chip nào không?
+    - Shop bán những gì thế? 
+    - Ở đây bán những loại gì?
+    - Liệt kê tất cả sản phẩm đi shop.
+    - Cho mình xem danh sách các mẫu đang có.
+    - Hiện tại có những mẫu mã nào?
 
 - lookup: product_name
   examples: |
@@ -552,9 +534,14 @@ nlu:
 - lookup: product_type
   examples: |
     - laptop
+    - may tinh
     - RAM
+    - ram
     - màn hình
+    - man hinh
     - card
+    - card do hoa
+    - card đồ họa
 
 - synonym: Apple
   examples: |
@@ -581,3 +568,6 @@ nlu:
 - regex: model_code
   examples: |
     - [a-zA-Z0-9]{2,}-[a-zA-Z0-9]{2,}  # Khớp với dạng như 27GR95QE-B
+
+
+

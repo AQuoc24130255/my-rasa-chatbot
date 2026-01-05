@@ -93,19 +93,10 @@ stories:
   steps:
   - intent: greet
   - action: utter_greet
-  - intent: ask_all_products
-  - action: action_show_all_products
-  - intent: ask_product_count
-  - action: action_get_product_count
+  - intent: browse_shop
+  - action: action_browse_shop
   - intent: goodbye
   - action: utter_goodbye
-
-- story: khách hỏi số lượng sản phẩm rồi mới hỏi giá cụ thể
-  steps:
-  - intent: ask_product_count
-  - action: action_get_product_count
-  - intent: ask_price
-  - action: action_get_product_price
 
 
 # --- NHÓM XỬ LÝ TÌNH HUỐNG NGOẠI LỆ (Edge Cases) ---
@@ -143,28 +134,13 @@ stories:
   - action: utter_did_that_help
   - intent: affirm
   - action: utter_happy
-  - intent: ask_all_products
-  - action: action_show_all_products
-  - intent: ask_price
-  - action: action_get_product_price
-  - intent: ask_description
-  - action: action_get_product_description
+  - intent: browse_shop
+  - action: action_browse_shop
+  - intent: goodbye
+  - action: utter_goodbye
 
 
 
-
-
-# --- LUỒNG 3: TÌM HIỂU KỸ (Hỏi từ tổng quát đến chi tiết) ---
-- story: tìm hiểu toàn diện từ danh sách -> số lượng -> giá -> mô tả
-  steps:
-  - intent: ask_all_products
-  - action: action_show_all_products
-  - intent: ask_product_count
-  - action: action_get_product_count
-  - intent: ask_price
-  - action: action_get_product_price
-  - intent: ask_description
-  - action: action_get_product_description
 
 
 # --- LUỒNG 4: SỬA LỖI VÀ QUAY LẠI QUY TRÌNH (Recovery Path) ---
@@ -192,5 +168,12 @@ stories:
   steps:
   - intent: ask_price
   - action: action_get_product_price # Action này sẽ trả về thông báo "Không tìm thấy"
-  - intent: ask_all_products
-  - action: action_show_all_products
+  - intent: show_products_by_type
+  - action: action_show_products_by_type
+
+- story: khách hỏi sản phẩm lạ và chọn xem toàn bộ sản phẩm
+  steps:
+  - intent: ask_price
+  - action: action_get_product_price # Action này sẽ trả về thông báo "Không tìm thấy"
+  - intent: browse_shop
+  - action: action_browse_shop

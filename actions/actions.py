@@ -33,6 +33,7 @@ import mysql.connector
 from unidecode import unidecode
 import re
 from thefuzz import fuzz, process
+import json
 
 # Tạo một function dùng chung ở đầu file
 def get_db_connection():
@@ -46,7 +47,52 @@ def get_db_connection():
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
-        
+
+# HÀM HELPER CHÍNH: Tìm kiếm sản phẩm thông minh
+def find_products_in_db(tracker, cursor, entity_name="product_name"):
+    # 1. Lấy từ khóa từ Entity hoặc Slot
+    raw_name = next(tracker.get_latest_entity_values(entity_name), None)
+    if not raw_name:
+        raw_name = tracker.get_slot(entity_name)
+    
+    if not raw_name:
+        return None, None
+
+    search_term = unidecode(raw_name).lower()
+    keywords = re.findall(r'\b\w+\b', search_term)
+    if not keywords:
+        return raw_name, []
+
+    # 2. CHIẾN THUẬT 1: SQL LIKE
+    query = "SELECT * FROM products WHERE "
+    conditions = [f"search_name LIKE %s"] * len(keywords[:4])
+    params = [f"%{word}%" for word in keywords[:4]]
+    
+    query += " AND ".join(conditions)
+    query += " ORDER BY LENGTH(name) ASC LIMIT 5"
+
+    cursor.execute(query, tuple(params))
+    results = cursor.fetchall()
+
+    # 3. CHIẾN THUẬT 2: FUZZY MATCHING (Nếu LIKE thất bại)
+    if not results:
+        cursor.execute("SELECT * FROM products")
+        all_prods = cursor.fetchall()
+        if all_prods:
+            choices = {p['search_name']: p for p in all_prods}
+            match = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
+            if match and match[1] > 70:
+                results = [choices[match[0]]]
+
+    return raw_name, results
+
+# HÀM HELPER 2: Tạo Button an toàn (Fix lỗi payload)
+def create_button(title, intent, entities_dict):
+    return {
+        "title": title,
+        "payload": f"/{intent}{json.dumps(entities_dict, ensure_ascii=False)}"
+    }
+
 class ActionGetProductPrice(Action):
     def name(self) -> Text:
         return "action_get_product_price"
@@ -55,73 +101,34 @@ class ActionGetProductPrice(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         cursor = None
-        # Lấy tên sản phẩm khách vừa nhắc tới (Entity: product_name)
-        raw_product_name = next(tracker.get_latest_entity_values("product_name"), None)
-
-        # lục lại trong bộ nhớ (Slot) nếu không có entity
-        if not raw_product_name:
-            raw_product_name = tracker.get_slot("product_name")
-
-        if not raw_product_name:
-            dispatcher.utter_message(text="Bạn muốn hỏi giá của sản phẩm nào ạ? (Ví dụ: iphone, apple)")
+        # Kết nối Database (Dùng IP 127.0.0.1 để tránh lỗi socket)
+        connection = get_db_connection()
+        if not connection:
+            dispatcher.utter_message(text="Lỗi kết nối database.")
             return []
-
-        search_term = unidecode(raw_product_name).lower()
-        keywords = re.findall(r'\b\w+\b', search_term)
-
-        if not keywords:
-            dispatcher.utter_message(text="Shop chưa rõ tên sản phẩm bạn cần hỏi.")
-            return []
-
-        events = []
-
+        
         try:
-            # Kết nối Database (Dùng IP 127.0.0.1 để tránh lỗi socket)
-            connection = get_db_connection()
-            if not connection:
-                dispatcher.utter_message(text="Lỗi kết nối database.")
-                return []
             cursor = connection.cursor(dictionary=True)
 
-            # CHIẾN THUẬT 1: SQL LIKE (ƯU TIÊN CHÍNH XÁC) ---
-            # Tìm sản phẩm chứa từ thứ 1 VÀ từ thứ 2 VÀ từ thứ 3...
-            query = "SELECT name, price, search_name FROM products WHERE "
-            conditions = []
-            params = []
+            raw_product_name, results = find_products_in_db(tracker, cursor)
 
-            # Chỉ lấy tối đa 4 từ khóa quan trọng nhất để tìm kiếm không bị quá hẹp
-            for word in keywords[:4]: 
-                conditions.append("search_name LIKE %s")
-                params.append(f"%{word}%")
+            events = []
             
-            query += " AND ".join(conditions)
-            query += " ORDER BY LENGTH(name) ASC LIMIT 3"
-
-            cursor.execute(query, tuple(params))
-            results = cursor.fetchall()
-            # --- CHIẾN THUẬT 2: FUZZY MATCHING (CỨU CÁNH KHI SAI CHÍNH TẢ) ---
             if not results:
-                # Lấy toàn bộ danh sách search_name từ DB để so sánh mờ
-                cursor.execute("SELECT name, search_name, price FROM products")
-                all_products = cursor.fetchall()
-                
-                if all_products: # Kiểm tra tránh crash nếu DB trống
-                    choices = {p['search_name']: p for p in all_products}
-                    # Sử dụng extractOne an toàn
-                    match_result = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
-                    if match_result and match_result[1] > 70:
-                        results = [choices[match_result[0]]]
-            '''
-            # Truy vấn tìm kiếm sản phẩm (dùng LIKE để tìm kiếm gần đúng)
-            query = """SELECT name, price FROM products 
-                WHERE search_name LIKE %s 
-                OR %s LIKE CONCAT('%', search_name, '%')
-                ORDER BY LENGTH(search_name) DESC
-                LIMIT 5
-            """
-            cursor.execute(query, ("%" + search_term + "%",search_term))
-            results = cursor.fetchall()
-            '''
+                if not raw_product_name:
+                    dispatcher.utter_message(text="Bạn muốn hỏi giá sản phẩm nào ạ?")
+                else:
+                    msg = (f"Tiếc quá, hiện tại shop chưa có thông tin giá cho '{raw_product_name}' ạ.\n\n"
+                        f"Bạn có muốn xem qua những mẫu đang sẵn hàng tại shop không?")
+                    # Gợi ý khách xem các sản phẩm khác bằng nút bấm
+                    buttons = [
+                        {"title": "📦 Xem danh sách sản phẩm", "payload": "/browse_shop"},
+                        {"title": "🔍 Thử tìm tên khác", "payload": "/ask_price"},
+                        {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
+                    ]
+                    dispatcher.utter_message(text=msg, buttons=buttons)
+                events.append(SlotSet("product_name", None))
+            
             if len(results) == 1:
                 item = results[0]
                 name = item['name']
@@ -136,22 +143,11 @@ class ActionGetProductPrice(Action):
                 price_suggest = "{:,.0f}".format(best_match['price'])
 
                 msg = (f"Dạ, dòng '{raw_product_name}' shop có khá nhiều mẫu.\n\n"
-                       f"🌟 **Nổi bật nhất** là {best_match['name']} với giá khoảng **{price_suggest} VNĐ**.\n\n"
-                       f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
-                
+                    f"🌟 **Nổi bật nhất** là {best_match['name']} với giá khoảng **{price_suggest} VNĐ**.\n\n"
+                    f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
+                    
                 dispatcher.utter_message(text=msg)
                 events.append(SlotSet("product_name", best_match['name']))
-            else:
-                msg = (f"Tiếc quá, hiện tại shop chưa có thông tin giá cho '{raw_product_name}' ạ.\n\n"
-                    "Bạn có muốn xem qua những mẫu máy đang sẵn hàng tại shop không?")
-                # Gợi ý khách xem các sản phẩm khác bằng nút bấm
-                buttons = [
-                    {"title": "📦 Xem danh sách sản phẩm", "payload": "/ask_all_products"},
-                    {"title": "🔍 Thử tìm tên khác", "payload": "/ask_price"},
-                    {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
-                ]
-                dispatcher.utter_message(text=msg, buttons=buttons)
-                events.append(SlotSet("product_name", None))
 
         except mysql.connector.Error as err:
             dispatcher.utter_message(text="Rất xin lỗi, hệ thống dữ liệu của shop đang gặp chút trục trặc. Bạn thử lại sau nhé!")
@@ -174,80 +170,39 @@ class ActionGetProductDescription(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         cursor = None
-        # 1. Lấy thực thể product_name
-        raw_product_name = next(tracker.get_latest_entity_values("product_name"), None)
-
-        # lục lại trong bộ nhớ (Slot) nếu không có entity
-        if not raw_product_name:
-            raw_product_name = tracker.get_slot("product_name")
-
-        if not raw_product_name:
-            dispatcher.utter_message(text="Bạn muốn xem thông tin chi tiết của sản phẩm nào ạ?")
+        # Kết nối Database (Dùng IP 127.0.0.1 để tránh lỗi socket)
+        connection = get_db_connection()
+        if not connection:
+            dispatcher.utter_message(text="Lỗi kết nối database.")
             return []
-
-        search_term = unidecode(raw_product_name).lower()
-        keywords = re.findall(r'\b\w+\b', search_term)
-
-        if not keywords:
-            dispatcher.utter_message(text="Shop chưa rõ tên sản phẩm bạn cần hỏi.")
-            return []
-
-        events = []
-
         try:
-            # 2. Kết nối MySQL
-            connection = get_db_connection()
-            if not connection:
-                dispatcher.utter_message(text="Lỗi kết nối database.")
-                return []
             cursor = connection.cursor(dictionary=True)
 
-            # --- CHIẾN THUẬT 1: SQL LIKE (ƯU TIÊN CHÍNH XÁC) ---
-            # Tìm sản phẩm chứa từ thứ 1 VÀ từ thứ 2 VÀ từ thứ 3...
-            query = "SELECT name, description, search_name FROM products WHERE "
-            conditions = []
-            params = []
+            raw_product_name, results = find_products_in_db(tracker, cursor)
 
-            # Chỉ lấy tối đa 4 từ khóa quan trọng nhất để tìm kiếm không bị quá hẹp
-            for word in keywords[:4]: 
-                conditions.append("search_name LIKE %s")
-                params.append(f"%{word}%")
+            events = []
             
-            query += " AND ".join(conditions)
-            query += " ORDER BY LENGTH(name) ASC LIMIT 3"
-
-            cursor.execute(query, tuple(params))
-            results = cursor.fetchall()
-            # --- CHIẾN THUẬT 2: FUZZY MATCHING (CỨU CÁNH KHI SAI CHÍNH TẢ) ---
             if not results:
-                # Lấy toàn bộ danh sách search_name từ DB để so sánh mờ
-                cursor.execute("SELECT name, description, search_name FROM products")
-                all_products = cursor.fetchall()
-                
-                if all_products: # Kiểm tra tránh crash nếu DB trống
-                    choices = {p['search_name']: p for p in all_products}
-                    # Sử dụng extractOne an toàn
-                    match_result = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
-                    if match_result and match_result[1] > 70:
-                        results = [choices[match_result[0]]]
-            '''
-            # 3. Truy vấn lấy Description
-            query = """SELECT name, description FROM products 
-                WHERE search_name LIKE %s 
-                OR %s LIKE CONCAT('%', search_name, '%')
-                ORDER BY LENGTH(search_name) DESC
-                LIMIT 3
-            """
-            cursor.execute(query, ("%" + search_term + "%",search_term))
-            results = cursor.fetchall()
-            '''
-
-
+                if not raw_product_name:
+                    dispatcher.utter_message(text="Bạn muốn hỏi thông tin của sản phẩm nào ạ?")
+                else:
+                    msg = (f"Xin lỗi, shop chưa có thông tin mô tả cho sản phẩm '{raw_product_name}' ạ.\n\n"
+                        f"Bạn có muốn xem qua những mẫu đang sẵn hàng tại shop không?")
+                    # Gợi ý khách xem các sản phẩm khác bằng nút bấm
+                    buttons = [
+                        {"title": "📦 Xem danh sách sản phẩm", "payload": "/browse_shop"},
+                        {"title": "🔍 Thử tìm tên khác", "payload": "/ask_price"},
+                        {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
+                    ]
+                    dispatcher.utter_message(text=msg, buttons=buttons)
+                events.append(SlotSet("product_name", None))
+            
             if len(results) == 1:
                 item = results[0]
                 name = item['name']
                 desc = item['description']
                 dispatcher.utter_message(text=f"Thông tin chi tiết về {name}: {desc}")
+                # Lưu tên sản phẩm chuẩn vào slot để lần sau khách hỏi "cấu hình nó" thì chính xác hơn
                 events.append(SlotSet("product_name", item['name']))
             elif len(results) > 1:
                 best_match = results[0]
@@ -255,21 +210,11 @@ class ActionGetProductDescription(Action):
                 names = ", ".join([r['name'] for r in results[1:]])
 
                 msg = (f"Dạ, dòng '{raw_product_name}' shop có khá nhiều mẫu.\n\n"
-                       f"🌟 **Nổi bật nhất** là {best_match['name']} với thông tin là **{short_desc}**.\n\n"
-                       f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
-                
+                        f"🌟 **Nổi bật nhất** là {best_match['name']} với thông tin là **{short_desc}**.\n\n"
+                        f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
+                    
                 dispatcher.utter_message(text=msg)
                 events.append(SlotSet("product_name", best_match['name']))
-            else:
-                dispatcher.utter_message(text=f"Xin lỗi, shop chưa có thông tin mô tả cho sản phẩm '{raw_product_name}'.")
-                # Gợi ý khách xem các sản phẩm khác bằng nút bấm
-                buttons = [
-                    {"title": "📦 Xem danh sách sản phẩm", "payload": "/ask_all_products"},
-                    {"title": "🔍 Thử tìm tên khác", "payload": "/ask_description"},
-                    {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
-                ]
-                dispatcher.utter_message(text="Bạn có muốn xem qua những mẫu máy đang sẵn hàng tại shop không?", buttons=buttons)
-                events.append(SlotSet("product_name", None))
 
         except mysql.connector.Error as err:
             dispatcher.utter_message(text="Hệ thống đang gặp lỗi kết nối dữ liệu.")
@@ -283,44 +228,76 @@ class ActionGetProductDescription(Action):
 
         return events
 
-class ActionGetProductCount(Action):
+class ActionGetProductType(Action):
     def name(self) -> Text:
-        return "action_get_product_count"
+        return "action_get_product_type"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
         cursor = None
+        connection = get_db_connection()
+        
+        if not connection:
+            dispatcher.utter_message(text="Lỗi kết nối database.")
+            return []
+
         try:
-            connection = get_db_connection()
-            if not connection:
-                dispatcher.utter_message(text="Lỗi kết nối database.")
-                return []
             cursor = connection.cursor(dictionary=True)
+            # Sử dụng hàm helper chung để tìm kiếm sản phẩm
+            raw_product_name, results = find_products_in_db(tracker, cursor)
 
-            # Truy vấn đếm số lượng TÊN sản phẩm khác nhau
-            query = "SELECT COUNT(DISTINCT name) as total FROM products"
-            cursor.execute(query)
-            result = cursor.fetchone()
-            count = result['total'] if result else 0 # Gọi bằng key 'total'
+            events = []
 
-            if count > 0:
-                message = f"Dạ, hiện tại shop đang có tất cả **{count} mẫu sản phẩm** khác nhau để bạn lựa chọn ạ!"
-                dispatcher.utter_message(text=message)
-            else:
-                dispatcher.utter_message(text="Dạ, hiện tại danh mục sản phẩm đang trống ạ.")
+            # TRƯỜNG HỢP 1: Không tìm thấy sản phẩm
+            if not results:
+                if not raw_product_name:
+                    dispatcher.utter_message(text="Bạn muốn kiểm tra loại của sản phẩm nào ạ?")
+                else:
+                    msg = (f"Tiếc quá, shop chưa có thông tin phân loại cho '{raw_product_name}' ạ.\n\n"
+                        f"Bạn có muốn xem qua những mẫu đang sẵn hàng tại shop không?")
+                    buttons = [
+                        {"title": "📦 Xem danh sách sản phẩm", "payload": "/browse_shop"},
+		                {"title": "🔍 Thử tìm tên khác", "payload": "/ask_price"},
+		                {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
+	                ]
+                    dispatcher.utter_message(text=msg, buttons=buttons)
+                return [SlotSet("product_name", None)]
+
+            # TRƯỜNG HỢP 2: Tìm thấy chính xác 1 sản phẩm
+            if len(results) == 1:
+                item = results[0]
+                name = item['name']
+                p_type = item['type'] # Lấy trường 'type' từ DB
+                
+                dispatcher.utter_message(
+                    text=f"Dạ, sản phẩm **{name}** thuộc dòng **{p_type}** của shop mình ạ."
+                )
+                events.append(SlotSet("product_name", name))
+
+            # TRƯỜNG HỢP 3: Tìm thấy nhiều sản phẩm tương tự
+            elif len(results) > 1:
+                best_match = results[0]
+                p_type = best_match['type']
+                others = ", ".join([r['name'] for r in results[1:4]]) # Lấy thêm tối đa 3 mẫu khác
+
+                msg = (f"Dạ, mẫu '{best_match['name']}' mà bạn quan tâm thuộc dòng **{p_type}**.\n\n"
+                       f"Trong dòng này shop còn có: {others}. Bạn có muốn xem chi tiết mẫu nào không?")
+                
+                dispatcher.utter_message(text=msg)
+                events.append(SlotSet("product_name", best_match['name']))
 
         except mysql.connector.Error as err:
-            dispatcher.utter_message(text="Lỗi kết nối database khi đếm sản phẩm.")
-        
+            dispatcher.utter_message(text="Hệ thống đang gặp lỗi kết nối dữ liệu.")
+            
         finally:
-            # --- Đóng kết nối an toàn ---
             if cursor:
                 cursor.close()
             if connection and connection.is_connected():
                 connection.close()
 
-        return []
+        return events
 
 class ActionCountProductByType(Action):
     def name(self) -> Text:
@@ -331,7 +308,9 @@ class ActionCountProductByType(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         cursor = None
         # 1. Lấy thực thể 'product_type' từ tin nhắn khách (ví dụ: "màn hình", "laptop")
-        product_type = tracker.get_slot("product_type")
+        product_type = next(tracker.get_latest_entity_values("product_type"), None)
+        if not product_type:
+            product_type = tracker.get_slot("product_type")
 
         if not product_type:
             dispatcher.utter_message(text="Bạn muốn đếm loại sản phẩm nào ạ? (Ví dụ: màn hình, laptop...)")
@@ -371,7 +350,7 @@ class ActionCountProductByType(Action):
                     )
                     # Gợi ý thêm nút bấm để khách xem danh sách
                     buttons = [
-                        {"title": f"Xem các mẫu {matched_type}", "payload": f"/search_product_by_type{{\"product_type\":\"{matched_type}\"}}"}
+                        {"title": f"Xem các mẫu {matched_type}", "payload": f"/show_products_by_type{{\"product_type\":\"{matched_type}\"}}"}
                     ]
                     dispatcher.utter_message(buttons=buttons)
                 else:
@@ -390,99 +369,6 @@ class ActionCountProductByType(Action):
 
         return []
 
-class ActionCountAllTypes(Action):
-    def name(self) -> Text:
-        return "action_count_all_types"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        cursor = None
-        connection = get_db_connection()
-        if not connection:
-            dispatcher.utter_message(text="Lỗi kết nối database.")
-            return []
-        cursor = connection.cursor(dictionary=True)
-
-        try:
-            # 1. Truy vấn lấy danh sách các loại (type) duy nhất
-            cursor.execute("SELECT DISTINCT type FROM products")
-            rows = cursor.fetchall()
-            
-            types = [row['type'] for row in rows if row['type']]
-            total_types = len(types)
-
-            if total_types > 0:
-                # 2. Tạo thông báo
-                type_list_str = ", ".join(types)
-                msg = f"Dạ, hiện tại Gemini Shop đang kinh doanh **{total_types}** dòng sản phẩm chính, bao gồm: {type_list_str}."
-                dispatcher.utter_message(text=msg)
-
-                # 3. Tạo các nút bấm để khách chọn xem loại nào luôn
-                buttons = []
-                for t in types:
-                    buttons.append({
-                        "title": f"Xem {t}",
-                        "payload": f'/show_products_by_type{{"product_type": "{t}"}}'
-                    })
-                
-                dispatcher.utter_message(text="Bạn muốn tham khảo dòng sản phẩm nào ạ?", buttons=buttons)
-            else:
-                dispatcher.utter_message(text="Hiện tại shop đang cập nhật danh mục sản phẩm, bạn vui lòng quay lại sau nhé!")
-
-        except Exception as e:
-            dispatcher.utter_message(text=f"Lỗi hệ thống khi đếm loại sản phẩm: {str(e)}")
-        finally:
-            # --- Đóng kết nối an toàn ---
-            if cursor:
-                cursor.close()
-            if connection and connection.is_connected():
-                connection.close()
-
-        return []
-
-class ActionShowAllProducts(Action):
-    def name(self) -> Text:
-        return "action_show_all_products"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        cursor = None
-        try:
-            # 1. Kết nối MySQL
-            connection = get_db_connection()
-            if not connection:
-                dispatcher.utter_message(text="Lỗi kết nối database.")
-                return []
-            cursor = connection.cursor(dictionary=True)
-
-            # 2. Truy vấn lấy danh sách các tên mẫu duy nhất
-            query = "SELECT DISTINCT name FROM products"
-            cursor.execute(query)
-            results = cursor.fetchall()
-
-            if results:
-                # 3. Định dạng danh sách kết quả
-                product_list = "\n- ".join([row['name'] for row in results])
-                message = f"Dạ, hiện tại Gemini Shop đang có các mẫu sản phẩm sau ạ:\n- {product_list}"
-                message += "\n\nBạn muốn hỏi chi tiết hoặc giá của mẫu nào thì nhắn mình nhé!"
-                dispatcher.utter_message(text=message)
-            else:
-                dispatcher.utter_message(text="Hiện tại shop đang cập nhật mẫu mới, bạn vui lòng quay lại sau nha!")
-
-        except mysql.connector.Error as err:
-            dispatcher.utter_message(text="Hệ thống gặp sự cố khi lấy danh sách sản phẩm.")
-        
-        finally:
-            # --- Đóng kết nối an toàn ---
-            if cursor:
-                cursor.close()
-            if connection and connection.is_connected():
-                connection.close()
-
-        return []
-
 class ActionShowProductsByType(Action):
     def name(self) -> Text:
         return "action_show_products_by_type"
@@ -492,7 +378,9 @@ class ActionShowProductsByType(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         cursor = None
         # 1. Lấy loại sản phẩm khách yêu cầu
-        product_type = tracker.get_slot("product_type")
+        product_type = next(tracker.get_latest_entity_values("product_type"), None)
+        if not product_type:
+            product_type = tracker.get_slot("product_type")
 
         if not product_type:
             dispatcher.utter_message(text="Bạn muốn xem loại sản phẩm nào ạ? (Ví dụ: Laptop, Màn hình...)")
@@ -528,7 +416,7 @@ class ActionShowProductsByType(Action):
                         # Tạo nút bấm: hiển thị Tên - Giá, khi nhấn sẽ gửi payload tìm sản phẩm đó
                         buttons.append({
                             "title": f"{p['name']} ({price_fmt}đ)",
-                            "payload": f"/search_product{{\"product_name\":\"{p['name']}\"}}"
+                            "payload": f"/ask_description{{\"product_name\":\"{p['name']}\"}}"
                         })
                     
                     dispatcher.utter_message(buttons=buttons)
@@ -548,45 +436,60 @@ class ActionShowProductsByType(Action):
 
         return []
 
-class ActionListProductTypes(Action):
+class ActionBrowseShop(Action):
     def name(self) -> Text:
-        return "action_list_product_types"
+        return "action_browse_shop"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
         cursor = None
         connection = get_db_connection()
         if not connection:
-            dispatcher.utter_message(text="Lỗi kết nối database.")
+            dispatcher.utter_message(text="Lỗi kết nối hệ thống.")
             return []
-        cursor = connection.cursor(dictionary=True)
 
         try:
-            # 1. Truy vấn các loại sản phẩm duy nhất
+            cursor = connection.cursor(dictionary=True)
+
+            # 1. Lấy tổng số lượng sản phẩm
+            cursor.execute("SELECT COUNT(*) as total FROM products")
+            total_count = cursor.fetchone()['total']
+
+            # 2. Lấy danh sách các loại sản phẩm duy nhất (Categories)
             cursor.execute("SELECT DISTINCT type FROM products")
-            rows = cursor.fetchall()
+            categories = cursor.fetchall()
 
-            if rows:
-                # 2. Chuẩn bị tin nhắn và các nút bấm
-                dispatcher.utter_message(text="🛍️ Gemini Shop hiện có các dòng sản phẩm sau:")
-                
-                buttons = []
-                for row in rows:
-                    p_type = row['type']
-                    # Khi nhấn nút, sẽ gửi intent kèm slot product_type
-                    buttons.append({
-                        "title": f"Dòng {p_type}",
-                        "payload": f'/show_products_by_type{{"product_type": "{p_type}"}}'
-                    })
-                
-                # 3. Gửi danh sách nút bấm về cho người dùng
-                dispatcher.utter_message(buttons=buttons)
-            else:
-                dispatcher.utter_message(text="Dạ, hiện tại shop chưa có sản phẩm nào được phân loại ạ.")
+            # 3. Lấy tổng số lượng loại sản phẩm
+            types = [row['type'] for row in categories if row['type']]
+            total_types = len(types)
 
-        except Exception as e:
-            dispatcher.utter_message(text=f"Lỗi truy xuất danh mục: {str(e)}")
+            if not categories:
+                dispatcher.utter_message(text="Hiện tại shop đang cập nhật hàng mới, bạn quay lại sau nhé!")
+                return []
+
+            # 3. Xây dựng thông điệp
+            msg = (f"🌟 **Gemini Shop** đang có sẵn **{total_count}** sản phẩm bao gồm **{total_types}** loại sản phẩm!\n"
+                   f"Dưới đây là các danh mục bạn có thể khám phá:")
+
+            # 4. Tạo các nút bấm dựa trên category (Dùng helper json.dumps để fix lỗi payload)
+            buttons = []
+            for cat in categories:
+                category_name = cat['type']
+                # Payload an toàn cho Rasa
+                payload = f'/show_products_by_type{{"product_type": "{category_name}"}}'
+                
+                buttons.append({
+                    "title": f"📦 {category_name.capitalize()}",
+                    "payload": payload
+                })
+
+            dispatcher.utter_message(text=msg, buttons=buttons)
+
+        except mysql.connector.Error as err:
+            dispatcher.utter_message(text="Rất xin lỗi, hệ thống dữ liệu của shop đang gặp chút trục trặc. Bạn thử lại sau nhé!")
+        
         finally:
             # --- Đóng kết nối an toàn ---
             if cursor:
@@ -595,4 +498,3 @@ class ActionListProductTypes(Action):
                 connection.close()
 
         return []
-

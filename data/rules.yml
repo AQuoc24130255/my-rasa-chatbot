@@ -49,16 +49,10 @@ rules:
   - intent: ask_description
   - action: action_get_product_description
 
-
-- rule: Trả lời số lượng mẫu mã
+- rule: Tra cứu loại sản phẩm khi khách hỏi
   steps:
-  - intent: ask_product_count
-  - action: action_get_product_count
-
-- rule: Hiển thị tất cả mẫu sản phẩm
-  steps:
-  - intent: ask_all_products
-  - action: action_show_all_products
+  - intent: ask_product_type
+  - action: action_get_product_type
 
 - rule: Đáp lại yêu cầu đếm sản phẩm theo loại
   steps:
@@ -70,13 +64,8 @@ rules:
   - intent: show_products_by_type
   - action: action_show_products_by_type
 
-- rule: Trả lời về các loại sản phẩm đang có
+- rule: Hiển thị tổng quan cửa hàng và danh mục
   steps:
-  - intent: ask_all_categories
-  - action: action_count_all_types
+  - intent: browse_shop
+  - action: action_browse_shop
 
-- rule: Hiển thị danh mục khi khách hỏi
-  steps:
-    - intent: ask_what_you_sell
-    - action: action_list_product_types
-    
