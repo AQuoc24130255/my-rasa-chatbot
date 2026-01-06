@@ -106,13 +106,13 @@ class ActionGetProductPrice(Action):
         if not connection:
             dispatcher.utter_message(text="Lỗi kết nối database.")
             return []
-        
+
+        events = []
+
         try:
             cursor = connection.cursor(dictionary=True)
 
             raw_product_name, results = find_products_in_db(tracker, cursor)
-
-            events = []
             
             if not results:
                 if not raw_product_name:
@@ -128,15 +128,14 @@ class ActionGetProductPrice(Action):
                     ]
                     dispatcher.utter_message(text=msg, buttons=buttons)
                 events.append(SlotSet("product_name", None))
-            
-            if len(results) == 1:
+            elif len(results) == 1:
                 item = results[0]
                 name = item['name']
                 price = "{:,.0f}".format(item['price']) # Định dạng 150,000
                 dispatcher.utter_message(text=f"Dạ, sản phẩm {name} hiện có giá là {price} VNĐ ạ.")
                 # Lưu tên sản phẩm chuẩn vào slot để lần sau khách hỏi "cấu hình nó" thì chính xác hơn
                 events.append(SlotSet("product_name", item['name']))
-            elif len(results) > 1:
+            else:
                 best_match = results[0]
                 names = ", ".join([r['name'] for r in results[1:]])
 
@@ -150,6 +149,7 @@ class ActionGetProductPrice(Action):
                 events.append(SlotSet("product_name", best_match['name']))
 
         except mysql.connector.Error as err:
+            print(f"Lỗi thực thi: {err}")
             dispatcher.utter_message(text="Rất xin lỗi, hệ thống dữ liệu của shop đang gặp chút trục trặc. Bạn thử lại sau nhé!")
         
         finally:
@@ -175,13 +175,14 @@ class ActionGetProductDescription(Action):
         if not connection:
             dispatcher.utter_message(text="Lỗi kết nối database.")
             return []
+
+        events = []
+
         try:
             cursor = connection.cursor(dictionary=True)
 
             raw_product_name, results = find_products_in_db(tracker, cursor)
 
-            events = []
-            
             if not results:
                 if not raw_product_name:
                     dispatcher.utter_message(text="Bạn muốn hỏi thông tin của sản phẩm nào ạ?")
@@ -196,15 +197,14 @@ class ActionGetProductDescription(Action):
                     ]
                     dispatcher.utter_message(text=msg, buttons=buttons)
                 events.append(SlotSet("product_name", None))
-            
-            if len(results) == 1:
+            elif len(results) == 1:
                 item = results[0]
                 name = item['name']
                 desc = item['description']
                 dispatcher.utter_message(text=f"Thông tin chi tiết về {name}: {desc}")
                 # Lưu tên sản phẩm chuẩn vào slot để lần sau khách hỏi "cấu hình nó" thì chính xác hơn
                 events.append(SlotSet("product_name", item['name']))
-            elif len(results) > 1:
+            else:
                 best_match = results[0]
                 short_desc = (best_match['description'][:150] + '...') if len(best_match['description']) > 150 else best_match['description']
                 names = ", ".join([r['name'] for r in results[1:]])
@@ -217,6 +217,7 @@ class ActionGetProductDescription(Action):
                 events.append(SlotSet("product_name", best_match['name']))
 
         except mysql.connector.Error as err:
+            print(f"Lỗi thực thi: {err}")
             dispatcher.utter_message(text="Hệ thống đang gặp lỗi kết nối dữ liệu.")
         
         finally:
@@ -243,12 +244,12 @@ class ActionGetProductType(Action):
             dispatcher.utter_message(text="Lỗi kết nối database.")
             return []
 
+        events = []
+
         try:
             cursor = connection.cursor(dictionary=True)
             # Sử dụng hàm helper chung để tìm kiếm sản phẩm
             raw_product_name, results = find_products_in_db(tracker, cursor)
-
-            events = []
 
             # TRƯỜNG HỢP 1: Không tìm thấy sản phẩm
             if not results:
@@ -264,9 +265,8 @@ class ActionGetProductType(Action):
 	                ]
                     dispatcher.utter_message(text=msg, buttons=buttons)
                 return [SlotSet("product_name", None)]
-
             # TRƯỜNG HỢP 2: Tìm thấy chính xác 1 sản phẩm
-            if len(results) == 1:
+            elif len(results) == 1:
                 item = results[0]
                 name = item['name']
                 p_type = item['type'] # Lấy trường 'type' từ DB
@@ -275,9 +275,8 @@ class ActionGetProductType(Action):
                     text=f"Dạ, sản phẩm **{name}** thuộc dòng **{p_type}** của shop mình ạ."
                 )
                 events.append(SlotSet("product_name", name))
-
             # TRƯỜNG HỢP 3: Tìm thấy nhiều sản phẩm tương tự
-            elif len(results) > 1:
+            else:
                 best_match = results[0]
                 p_type = best_match['type']
                 others = ", ".join([r['name'] for r in results[1:4]]) # Lấy thêm tối đa 3 mẫu khác
@@ -289,6 +288,7 @@ class ActionGetProductType(Action):
                 events.append(SlotSet("product_name", best_match['name']))
 
         except mysql.connector.Error as err:
+            print(f"Lỗi thực thi: {err}")
             dispatcher.utter_message(text="Hệ thống đang gặp lỗi kết nối dữ liệu.")
             
         finally:
@@ -359,6 +359,7 @@ class ActionCountProductByType(Action):
                 dispatcher.utter_message(text=f"Shop hiện chưa có dòng sản phẩm nào tên là '{product_type}' ạ.")
 
         except Exception as e:
+            print(f"Lỗi thực thi: {err}")
             dispatcher.utter_message(text=f"Có lỗi xảy ra khi truy xuất dữ liệu: {str(e)}")
         finally:
             # --- Đóng kết nối an toàn ---
@@ -426,6 +427,7 @@ class ActionShowProductsByType(Action):
                 dispatcher.utter_message(text=f"Rất tiếc, shop chưa có loại sản phẩm '{product_type}' này.")
 
         except Exception as e:
+            print(f"Lỗi thực thi: {err}")
             dispatcher.utter_message(text=f"Lỗi hệ thống: {str(e)}")
         finally:
             # --- Đóng kết nối an toàn ---
@@ -488,6 +490,7 @@ class ActionBrowseShop(Action):
             dispatcher.utter_message(text=msg, buttons=buttons)
 
         except mysql.connector.Error as err:
+            print(f"Lỗi thực thi: {err}")
             dispatcher.utter_message(text="Rất xin lỗi, hệ thống dữ liệu của shop đang gặp chút trục trặc. Bạn thử lại sau nhé!")
         
         finally:

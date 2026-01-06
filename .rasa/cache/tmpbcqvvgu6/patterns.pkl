@@ -1,0 +1,14 @@
+[
+  {
+    "name": "model_code",
+    "pattern": "[a-zA-Z0-9]{2,}-[a-zA-Z0-9]{2,}  # Khớp với dạng như 27GR95QE-B"
+  },
+  {
+    "name": "product_name",
+    "pattern": "(\\bApple\\ MacBook\\ Air\\ M4\\ \\(13\\ inch,\\ 2025\\)\\b|\\bApple\\ MacBook\\ Air\\ M4\\ \\(13\\ inch\\)\\b|\\bApple\\ MacBook\\ Air\\ M4\\ 13\\ inch\\b|\\bApple\\ MacBook\\ Air\\ M4\\b|\\bApple\\ MacBook\\ Pro\\ M5\\b|\\bApple\\ MacBook\\ Air\\b|\\bApple\\ MacBook\\ Pro\\b|\\bApple\\ MacBook\\b|\\bApple\\b|\\biPhone\\ 15\\ Pro\\ Max\\b|\\biPhone\\ 15\\ Pro\\b|\\biPhone\\ 15\\b|\\biPhone\\b|\\bCorsair\\ Vengeance\\ RGB\\ DDR5\\ 32GB\\ \\(2x16GB\\)\\ 6400MHz\\b|\\bCorsair\\ Vengeance\\ RGB\\ DDR5\\ 32GB\\ \\(2x16GB\\)\\b|\\bCorsair\\ Vengeance\\ RGB\\ DDR5\\ 32GB\\b|\\bCorsair\\ Vengeance\\ RGB\\ DDR5\\b|\\bCorsair\\ Vengeance\\ RGB\\b|\\bCorsair\\ Vengeance\\b|\\bCorsair\\b|\\bASUS\\ ROG\\ Strix\\ GeForce\\ RTX\\ 5070\\ Ti\\b|\\bASUS\\ ROG\\ Strix\\ GeForce\\ RTX\\ 5070\\b|\\bASUS\\ ROG\\ Strix\\ GeForce\\ RTX\\b|\\bASUS\\ ROG\\ Strix\\ GeForce\\b|\\bASUS\\ ROG\\ Strix\\b|\\bASUS\\ ROG\\b|\\bASUS\\b|\\bASUS\\ ROG\\ Swift\\ OLED\\ PG32UCDM\\b|\\bASUS\\ ROG\\ Swift\\ OLED\\b|\\bASUS\\ ROG\\ Swift\\b|\\bASUS\\ ROG\\b|\\bASUS\\b|\\bG\\.Skill\\ Trident\\ Z5\\ RGB\\ DDR5\\ 32GB\\ \\(2x16GB\\)\\ 6400MHz\\b|\\bG\\.Skill\\ Trident\\ Z5\\ RGB\\ DDR5\\ 32GB\\ \\(2x16GB\\)\\b|\\bG\\.Skill\\ Trident\\ Z5\\ RGB\\ DDR5\\ 32GB\\b|\\bG\\.Skill\\ Trident\\ Z5\\ RGB\\ DDR5\\b|\\bG\\.Skill\\ Trident\\ Z5\\ RGB\\b|\\bG\\.Skill\\ Trident\\ Z5\\b|\\bG\\.Skill\\ Trident\\b|\\bG\\.Skill\\b|\\bGIGABYTE\\ AORUS\\ GeForce\\ RTX\\ 5080\\ MASTER\\ 16G\\b|\\bGIGABYTE\\ AORUS\\ GeForce\\ RTX\\ 5080\\ MASTER\\b|\\bGIGABYTE\\ AORUS\\ GeForce\\ RTX\\ 5080\\b|\\bGIGABYTE\\ AORUS\\ GeForce\\ RTX\\b|\\bGIGABYTE\\ AORUS\\ GeForce\\b|\\bGIGABYTE\\ AORUS\\b|\\bGIGABYTE\\b|\\bDell\\ Alienware\\ AW3423DWF\\ QD\\-OLED\\b|\\bDell\\ Alienware\\ AW3423DWF\\b|\\bDell\\ Alienware\\b|\\bDell\\b)"
+  },
+  {
+    "name": "product_type",
+    "pattern": "(\\blaptop\\b|\\bmay\\ tinh\\b|\\bRAM\\b|\\bram\\b|\\bmàn\\ hình\\b|\\bman\\ hinh\\b|\\bcard\\b|\\bcard\\ do\\ hoa\\b|\\bcard\\ đồ\\ họa\\b)"
+  }
+]
