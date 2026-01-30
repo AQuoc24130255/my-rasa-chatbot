@@ -259,61 +259,69 @@ nlu:
 
 - intent: ask_price
   examples: |
-    - cái [Apple MacBook Air M4 (13 inch, 2025)](product_name) bao nhiêu tiền
-    - cái [Apple MacBook Pro M5(13 inch, 2025)](product_name) bao nhiêu tiền
-    - cái [iPhone 15 Pro Max](product_name) bao nhiêu tiền
-    - [Apple MacBook](product_name) giá sao shop
-    - [iPhone 15 Pro Max](product_name) giá sao shop
-    - [iPhone 15 Pro](product_name) giá sao shop
-    - cho mình xin giá [laptop](product_name)
-    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) bao nhiêu
-    - [Apple MacBook Air M4](product_name) bao nhiêu
-    - [Apple MacBook Air](product_name) bao nhiêu
-    - giá của [laptop](product_name) là bao nhiêu
-    - giá [laptop](product_name) là bao nhiêu
-    - giá [laptop](product_name)
-    - cho mình hỏi giá
-    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá nhiêu vậy
-    - [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá ntn shop ơi
-    - [iPhone 15 Pro Max](product_name) giá ntn shop ơi
-    - [iPhone 15 Pro](product_name) giá ntn shop ơi
-    - cho hỏi [laptop](product_name) bao nhiêu tiền một cái
-    - giá [laptop](product_name) thế nào bạn
-    - check giá giúp mình mẫu [laptop](product_name) với
-    - check giá giúp mình mẫu [iPhone 15 Pro Max](product_name) với
-    - check giá giúp mình mẫu [iPhone](product_name) với
-    - shop ơi [Apple MacBook](product_name) nhiêu xiền
-    - [Apple MacBook](product_name) bn ạ
-    - mình muốn biết giá [laptop](product_name)
-    - mình muốn biết giá [iPhone 15 Pro Max](product_name)
-    - mình muốn biết giá [iPhone](product_name)
-    - giá rổ cái [Apple MacBook](product_name) này sao shop
-    - cái này [Apple MacBook Air M4 (13 inch, 2025)](product_name) giá cả sao
-    - [Apple MacBook](product_name) có đắt không shop
-    - tư vấn giá [laptop](product_name) cho mình nhé
-    - giá của [Apple MacBook Air](product_name)
-    - [Apple MacBook Air](product_name) bao nhiêu tiền
-    - cho mình xin giá [Apple MacBook Air M4](product_name)
-    - [MacBook Air 13 inch](product_name) giá sao
-    - [Apple MacBook Pro 14 inch](product_name) giá bao nhiêu
-    - [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name) bao nhiêu tiền?
-    - Cho mình xin giá bộ [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name)?
-    - Shop ơi, [Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz](product_name) giá ntn vậy?
-    - Cái [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) này giá cả sao shop?
-    - Check giá giúp mình mẫu [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) với.
-    - [ASUS ROG Strix GeForce RTX 5070 Ti](product_name) giá ntn shop ơi, có đắt không?
-    - Màn hình [ASUS ROG Swift OLED PG32UCDM](product_name) bao nhiêu tiền?
-    - Cho mình xin giá [ASUS ROG Swift OLED PG32UCDM](product_name) ạ.
-    - [ASUS ROG Swift OLED PG32UCDM](product_name) giá sao shop?
-    - Bộ RAM [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) bao nhiêu tiền một bộ?
-    - [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) giá ntn bạn ơi?
-    - Check giá giúp mình mẫu [G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz](product_name) với.
-    - Cái card màn hình [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) giá bao nhiêu tiền?
-    - Giá rổ cái [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name) này sao shop?
-    - Mình muốn biết giá [GIGABYTE AORUS GeForce RTX 5080 MASTER 16G](product_name).
-    - Màn hình [Dell Alienware AW3423DWF QD-OLED](product_name) bao nhiêu?
-    - Giá của [Dell Alienware AW3423DWF QD-OLED](product_name) là bao nhiêu?
-    - Tư vấn giá [Dell Alienware AW3423DWF QD-OLED](product_name) cho mình nhé.
+    # Trường hợp 1: Có product_name (Bắt buộc)
+    - giá [Core i9-14900K](product_name) bao nhiêu?
+    - [RTX 4090 AORUS Master](product_name) bao nhiêu tiền vậy shop
+    - cho xin giá con [Chip M3 Pro](product_name)
+    - [Vengeance RGB DDR5](product_name) giá sao
+    - [Radeon RX 7900 XTX Gaming Trio](product_name) còn hàng không và giá thế nào
+
+    # Trường hợp 2: Có product_bienthe (Bắt buộc)
+    - bản [32GB](product_bienthe) giá bao nhiêu
+    - loại [màu trắng](product_bienthe) nhiêu tiền
+    - [hàng tray](product_bienthe) thì giá thế nào shop
+    - báo giá bản [DDR5 6000MHz](product_bienthe)
+    - con [Box chính hãng](product_bienthe) giá sao
+
+    # Tên + Biến thể (Cực kỳ quan trọng để chốt đơn)
+    - [Vengeance RGB DDR5](product_name) bản [32GB](product_bienthe) giá nhiêu
+    - cho xin giá [Core i9-14900K](product_name) hàng [Box chính hãng](product_bienthe)
+    - con [RTX 4070 Gaming X Slim](product_name) loại [màu trắng](product_bienthe) bao nhiêu
+    - [Ryzen 7 7800X3D](product_name) kèm [fan zin](product_bienthe) giá sao shop
+    - [Trident Z5 RGB](product_name) [Bus 6000](product_bienthe) giá hiện tại là bao nhiêu
+    - giá của [Chip M4](product_name) bản [10 nhân](product_bienthe)
+    - [GeForce RTX 3050 Windforce](product_name) [8GB](product_bienthe) giá nhiêu
+
+    # Trường hợp 3: Kết hợp cả Name, Type, Thương hiệu và Biến thể
+    - [CPU](product_type) [Intel](product_thuonghieu) [Core i7-14700K](product_name) bản [Box](product_bienthe) giá nhiêu
+    - giá [RAM](product_type) [Corsair](product_thuonghieu) [Dominator Titanium](product_name) [32GB](product_bienthe)
+    - con [card](product_type) [ASUS](product_thuonghieu) [ROG Strix RTX 4090](product_name) bản [OC](product_bienthe) bao nhiêu tiền
+    - [Ryzen 7 7800X3D](product_name) [xách tay](product_bienthe) giá rẻ không
+    - báo giá [vga](product_type) [Gigabyte](product_thuonghieu) [RTX 4070 EAGLE OC](product_name)
+
+    # Trường hợp 4: Chỉ có loại/hãng và Biến thể (không có tên cụ thể)
+    - [RAM](product_type) [Kingston](product_thuonghieu) bản [16GB](product_bienthe) giá nhiêu
+    - [CPU](product_type) [AMD](product_thuonghieu) [8 nhân](product_bienthe) bao nhiêu tiền
+    - [card đồ họa](product_type) [MSI](product_thuonghieu) loại [3 quạt](product_bienthe) giá sao
+
+    # Loại + Tên
+    - [RAM](product_type) [Vengeance LPX DDR4](product_name) giá sao
+    - [CPU](product_type) [Core i5-13400F](product_name) nhiêu tiền
+    - giá [card màn hình](product_type) [Dual RTX 4060](product_name)
+    - con [vi xử lý](product_type) [Ryzen 5 7600](product_name) giá thế nào
+    
+    # Hãng + Tên
+    - [Corsair](product_thuonghieu) [Dominator Titanium](product_name) giá bao nhiêu
+    - đồ của [Kingston](product_thuonghieu) mẫu [FURY Renegade](product_name) giá sao
+    - [ASUS](product_thuonghieu) [ROG Strix RTX 4090](product_name) nhiêu tiền shop
+    - [G.Skill](product_thuonghieu) [Trident Z Royal](product_name) bản bạc giá nhiêu
+    
+    # Hãng + Loại + Tên (Đầy đủ nhất)
+    - [Intel](product_thuonghieu) [CPU](product_type) [Core Ultra 9 285K](product_name) giá hiện tại
+    - [Gigabyte](product_thuonghieu) [VGA](product_type) [RTX 4060 Ti Gaming OC](product_name) bao nhiêu
+    - [Apple](product_thuonghieu) [Chip](product_type) [M3 Max](product_name) giá sao
+
+- intent: ask_specs
+  examples: |
+    - cho mình xem cấu hình của [Core i9-14900K](product_name)
+    - thông số kỹ thuật của [RTX 4090](product_name)
+    - con này thông số thế nào?
+    - cấu hình chi tiết
+    - cho xem thông số
+    - nó có cấu hình gì?
+    - xem thông số kỹ thuật
+    - chi tiết cấu hình con này
+    - xem cấu hình [RAM Corsair](product_name)
 
 - intent: ask_description
   examples: |
@@ -479,57 +487,51 @@ nlu:
 
 - lookup: product_name
   examples: |
-    - Apple MacBook Air M4 (13 inch, 2025)
-    - Apple MacBook Air M4 (13 inch)
-    - Apple MacBook Air M4 13 inch
-    - Apple MacBook Air M4
-    - Apple MacBook Pro M5
-    - Apple MacBook Air
-    - Apple MacBook Pro
-    - Apple MacBook
-    - Apple
-    - iPhone 15 Pro Max
-    - iPhone 15 Pro
-    - iPhone 15
-    - iPhone
-    - Corsair Vengeance RGB DDR5 32GB (2x16GB) 6400MHz
-    - Corsair Vengeance RGB DDR5 32GB (2x16GB)
-    - Corsair Vengeance RGB DDR5 32GB
-    - Corsair Vengeance RGB DDR5 
-    - Corsair Vengeance RGB 
-    - Corsair Vengeance 
-    - Corsair
-    - ASUS ROG Strix GeForce RTX 5070 Ti
-    - ASUS ROG Strix GeForce RTX 5070
-    - ASUS ROG Strix GeForce RTX
-    - ASUS ROG Strix GeForce
-    - ASUS ROG Strix
-    - ASUS ROG
-    - ASUS
-    - ASUS ROG Swift OLED PG32UCDM
-    - ASUS ROG Swift OLED
-    - ASUS ROG Swift
-    - ASUS ROG
-    - ASUS
-    - G.Skill Trident Z5 RGB DDR5 32GB (2x16GB) 6400MHz
-    - G.Skill Trident Z5 RGB DDR5 32GB (2x16GB)
-    - G.Skill Trident Z5 RGB DDR5 32GB
-    - G.Skill Trident Z5 RGB DDR5
-    - G.Skill Trident Z5 RGB
-    - G.Skill Trident Z5
-    - G.Skill Trident
-    - G.Skill
-    - GIGABYTE AORUS GeForce RTX 5080 MASTER 16G
-    - GIGABYTE AORUS GeForce RTX 5080 MASTER
-    - GIGABYTE AORUS GeForce RTX 5080
-    - GIGABYTE AORUS GeForce RTX
-    - GIGABYTE AORUS GeForce
-    - GIGABYTE AORUS
-    - GIGABYTE
-    - Dell Alienware AW3423DWF QD-OLED
-    - Dell Alienware AW3423DWF
-    - Dell Alienware
-    - Dell
+    - Vengeance RGB DDR5
+    - Vengeance LPX DDR4
+    - Dominator Titanium
+    - Vengeance SODIMM (Laptop)
+    - Dominator Platinum RGB
+    - FURY Beast DDR5
+    - FURY Renegade
+    - FURY Impact (Laptop)
+    - NV2 PCIe 4.0
+    - FURY Beast DDR4
+    - Trident Z5 RGB
+    - Ripjaws S5
+    - Trident Z Royal
+    - Flare X5 (AMD)
+    - Ripjaws V DDR4
+    - Core i9-14900K
+    - Core i7-14700K
+    - Core i5-13400F
+    - Core i3-12100
+    - Core Ultra 9 285K
+    - Ryzen 9 7950X3D
+    - Ryzen 7 7800X3D
+    - Ryzen 5 7600
+    - Ryzen 9 5900X
+    - Ryzen 7 5700G
+    - Chip M4
+    - Chip M3 Pro
+    - Chip M3 Max
+    - Chip M2 Air
+    - Chip M1 Ultra
+    - ROG Strix RTX 4090
+    - TUF Gaming RTX 4070 Ti
+    - Dual RTX 4060
+    - ProArt RTX 4080
+    - Phoenix GTX 1650
+    - GeForce RTX 4080 Super Suprim X
+    - RTX 4070 Gaming X Slim
+    - RTX 4060 Ventus 2X
+    - Radeon RX 7900 XTX Gaming Trio
+    - GeForce GT 1030
+    - RTX 4090 AORUS Master
+    - RTX 4070 EAGLE OC
+    - RTX 4060 Ti Gaming OC
+    - Radeon RX 7600 XT Gaming OC
+    - GeForce RTX 3050 Windforce
 
 - lookup: product_type
   examples: |
@@ -542,6 +544,42 @@ nlu:
     - card
     - card do hoa
     - card đồ họa
+
+- lookup: product_thuonghieu
+  examples: |
+    - Corsair
+    - Kingston
+    - G.Skill
+    - Intel
+    - AMD
+    - Apple
+    - ASUS
+    - MSI
+    - Gigabyte
+
+- lookup: product_bienthe
+  examples: |
+    - COR-VNG-5-32B
+    - COR-VNG-5-32W
+    - KGN-BST-5-16
+    - KGN-BST-4-8
+    - GSK-Z5R-32B
+    - GSK-Z5R-32S
+    - GSK-RV4-32
+    - INT-14900K-B
+    - INT-14900K-T
+    - INT-ULT-9-B
+    - AMD-7950X3D
+    - AMD-7800X3D
+    - AMD-7600-B
+    - APL-M4-10C
+    - APL-M3P-12C
+    - ASU-PRO-4080
+    - ASU-PHX-1650
+    - MSI-SUP-4080S
+    - MSI-SLM-4070
+    - MSI-VTS-4060
+    - MSI-TRI-7900X
 
 - synonym: Apple
   examples: |

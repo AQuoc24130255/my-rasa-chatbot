@@ -49,42 +49,93 @@ def get_db_connection():
         return None
 
 # HÀM HELPER CHÍNH: Tìm kiếm sản phẩm thông minh
-def find_products_in_db(tracker, cursor, entity_name="product_name"):
-    # 1. Lấy từ khóa từ Entity hoặc Slot
-    raw_name = next(tracker.get_latest_entity_values(entity_name), None)
-    if not raw_name:
-        raw_name = tracker.get_slot(entity_name)
+def find_products_in_db(tracker, cursor, type_input, data_input):
+    """
+    Kết hợp SQL LIKE và Fuzzy Matching để tìm ID sản phẩm/biến thể.
+    - type_input: 'product_name' hoặc 'sku'
+    - data_input: giá trị chuỗi khách nhập
+    - data_output: (id_sp, id_bienthe)
+    """
+    if not data_input:
+        return None, type_input, None, "Dữ liệu đầu vào trống."
+
+    raw_data = data_input
+    search_term = unidecode(str(data_input)).lower().strip()
     
-    if not raw_name:
-        return None, None
+    try:
+        # --- BƯỚC 1: TÌM KIẾM BẰNG SQL LIKE (Ưu tiên tốc độ và độ chính xác cao) ---
+        if type_input == 'product_name':
+            query = "SELECT id_sp, id_bienthe, ten_san_pham FROM view_chi_tiet_san_pham WHERE ten_san_pham LIKE %s"
+            params = (f"%{data_input}%",)
+        elif type_input == 'product_bienthe':
+            query = "SELECT id_sp, id_bienthe, ten_san_pham FROM view_chi_tiet_san_pham WHERE sku LIKE %s"
+            params = (f"%{data_input}%",)
+        else:
+            return raw_data, type_input, None, "Kiểu lọc không hợp lệ."
 
-    search_term = unidecode(raw_name).lower()
-    keywords = re.findall(r'\b\w+\b', search_term)
-    if not keywords:
-        return raw_name, []
+        cursor.execute(query, params)
+        results = cursor.fetchall()
 
-    # 2. CHIẾN THUẬT 1: SQL LIKE
-    query = "SELECT * FROM products WHERE "
-    conditions = [f"search_name LIKE %s"] * len(keywords[:4])
-    params = [f"%{word}%" for word in keywords[:4]]
-    
-    query += " AND ".join(conditions)
-    query += " ORDER BY LENGTH(name) ASC LIMIT 5"
+        # Nếu LIKE tìm thấy kết quả, lấy cái đầu tiên và trả về luôn
+        if results:
+            data_output = results[0]['id_sp'] if type_input == 'product_name' else results[0]['id_bienthe']
+            return raw_data, type_input, data_output, None
 
-    cursor.execute(query, tuple(params))
-    results = cursor.fetchall()
+        # --- BƯỚC 2: FUZZY MATCHING (Chạy khi LIKE thất bại - xử lý sai chính tả/viết tắt) ---
+        # Lấy toàn bộ danh sách từ VIEW để làm tập dữ liệu so khớp
+        cursor.execute("SELECT id_sp, id_bienthe, ten_san_pham, sku FROM view_chi_tiet_san_pham")
+        all_data = cursor.fetchall()
+        
+        if not all_data:
+            return raw_data, type_input, None, "Kho hàng hiện tại đang trống."
 
-    # 3. CHIẾN THUẬT 2: FUZZY MATCHING (Nếu LIKE thất bại)
-    if not results:
-        cursor.execute("SELECT * FROM products")
-        all_prods = cursor.fetchall()
-        if all_prods:
-            choices = {p['search_name']: p for p in all_prods}
-            match = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
-            if match and match[1] > 70:
-                results = [choices[match[0]]]
+        # Chuẩn bị dữ liệu so khớp dựa trên type_input
+        if type_input == 'product_name':
+            choices = {unidecode(item['ten_san_pham']).lower(): item for item in all_data}
+            # Thực hiện so khớp mờ
+            best_match = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
 
-    return raw_name, results
+            # Kiểm tra ngưỡng tin cậy (Score > 70/100)
+            if best_match and best_match[1] >= 70:
+                matched_item = choices[best_match[0]]
+                data_output = matched_item['id_sp']
+                return raw_data, type_input, data_output, None
+        else: # sku
+            choices = {unidecode(item['sku']).lower(): item for item in all_data}
+            # Thực hiện so khớp mờ
+            best_match = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
+
+            # Kiểm tra ngưỡng tin cậy (Score > 70/100)
+            if best_match and best_match[1] >= 70:
+                matched_item = choices[best_match[0]]
+                data_output = matched_item['id_bienthe']
+                return raw_data, type_input, data_output, None
+        
+        # Nếu cả 2 cách đều thất bại
+        return raw_data, type_input, None, f"Không tìm thấy sản phẩm nào khớp với '{data_input}'."
+
+    except Exception as e:
+        return raw_data, type_input, None, f"Lỗi xử lý: {str(e)}"
+
+def get_product_view_by_id(cursor, id_sp):
+    """
+    Hàm nhận id_sp và trả về toàn bộ biến thể kèm thông tin chi tiết từ VIEW
+    """
+    try:
+        # Truy vấn trực tiếp từ VIEW đã tạo
+        query = "SELECT * FROM view_chi_tiet_san_pham WHERE id_sp = %s"
+        cursor.execute(query, (id_sp,))
+        
+        # Lấy tất cả các biến thể của sản phẩm đó (ví dụ: các màu, các mức dung lượng)
+        results = cursor.fetchall()
+        
+        if not results:
+            return None, "Không tìm thấy dữ liệu chi tiết cho sản phẩm này."
+            
+        return results, None
+
+    except Exception as e:
+        return None, f"Lỗi truy vấn VIEW: {str(e)}"
 
 # HÀM HELPER 2: Tạo Button an toàn (Fix lỗi payload)
 def create_button(title, intent, entities_dict):
@@ -100,8 +151,8 @@ class ActionGetProductPrice(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
         cursor = None
-        # Kết nối Database (Dùng IP 127.0.0.1 để tránh lỗi socket)
         connection = get_db_connection()
         if not connection:
             dispatcher.utter_message(text="Lỗi kết nối database.")
@@ -112,54 +163,183 @@ class ActionGetProductPrice(Action):
         try:
             cursor = connection.cursor(dictionary=True)
 
-            raw_product_name, results = find_products_in_db(tracker, cursor)
+            # 1. Gọi hàm tìm kiếm mới (trả về 4 giá trị)
+            raw_name = next(tracker.get_latest_entity_values("product_name"), None)
+            raw_bienthe = next(tracker.get_latest_entity_values("product_bienthe"), None)
+
+            if not raw_name and not raw_bienthe:
+                raw_name = tracker.get_slot("product_name")
+
+            d_out = None
+            t_in = None
+            final_raw = None
+            error_msg = None
+
+            if raw_name:
+                raw_name, t_in, d_out, error_msg = find_products_in_db(tracker, cursor, 'product_name', raw_name)
+            elif raw_bienthe:
+                raw_name, t_in, d_out, error_msg = find_products_in_db(tracker, cursor, 'product_bienthe', raw_bienthe)
             
-            if not results:
-                if not raw_product_name:
-                    dispatcher.utter_message(text="Bạn muốn hỏi giá sản phẩm nào ạ?")
-                else:
-                    msg = (f"Tiếc quá, hiện tại shop chưa có thông tin giá cho '{raw_product_name}' ạ.\n\n"
-                        f"Bạn có muốn xem qua những mẫu đang sẵn hàng tại shop không?")
-                    # Gợi ý khách xem các sản phẩm khác bằng nút bấm
-                    buttons = [
-                        {"title": "📦 Xem danh sách sản phẩm", "payload": "/browse_shop"},
-                        {"title": "🔍 Thử tìm tên khác", "payload": "/ask_price"},
-                        {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
-                    ]
-                    dispatcher.utter_message(text=msg, buttons=buttons)
+            # 2. Xử lý khi KHÔNG tìm thấy sản phẩm
+            if error_msg or not d_out:
+                msg = error_msg if error_msg else f"Tiếc quá, hiện tại shop chưa có thông tin cho '{raw_name}' ạ."
+                buttons = [
+                    {"title": "📦 Xem danh mục", "payload": "/browse_shop"},
+                    {"title": "🔍 Tìm sản phẩm khác", "payload": "/ask_price"},
+                    {"title": "📞 Cần nhân viên gọi lại", "payload": "/out_of_scope"}
+                ]
+                dispatcher.utter_message(text=msg, buttons=buttons)
                 events.append(SlotSet("product_name", None))
-            elif len(results) == 1:
-                item = results[0]
-                name = item['name']
-                price = "{:,.0f}".format(item['price']) # Định dạng 150,000
-                dispatcher.utter_message(text=f"Dạ, sản phẩm {name} hiện có giá là {price} VNĐ ạ.")
-                # Lưu tên sản phẩm chuẩn vào slot để lần sau khách hỏi "cấu hình nó" thì chính xác hơn
-                events.append(SlotSet("product_name", item['name']))
+                return events
+
+            # 3. Lấy toàn bộ biến thể từ VIEW dựa trên d_out tìm được
+            if t_in == 'product_name':
+                query_view = "SELECT * FROM view_chi_tiet_san_pham WHERE id_sp = %s"
+            elif t_in == 'product_bienthe':
+                query_view = "SELECT * FROM view_chi_tiet_san_pham WHERE id_bienthe = %s"
+
+            cursor.execute(query_view, (d_out,))
+            variants = cursor.fetchall()
+
+
+            if not variants:
+                dispatcher.utter_message(text="Dữ liệu chi tiết sản phẩm đang được cập nhật, bạn quay lại sau nhé!")
+                return events
+
+            # 4. Hiển thị thông tin
+            first_var = variants[0]
+            product_name = first_var['ten_san_pham']
+            proudct_thuonghieu = first_var['ten_thuonghieu']
+
+            if len(variants) == 1:
+                # Trường hợp chỉ có 1 biến thể duy nhất
+                price = "{:,.0f}".format(first_var['gia'])
+                msg = (f"Dạ, mẫu **{product_name}**, mã **{first_var['sku']}** của hãng {proudct_thuonghieu} "
+                       f"hiện có giá là **{price} VNĐ** ạ.")
+                # Thêm nút bấm xem cấu hình cho tiện
+                buttons = [{"title": "⚙️ Xem thông số", "payload": f"/ask_specs"}]
+                dispatcher.utter_message(text=msg, buttons=buttons)
             else:
-                best_match = results[0]
-                names = ", ".join([r['name'] for r in results[1:]])
-
-                price_suggest = "{:,.0f}".format(best_match['price'])
-
-                msg = (f"Dạ, dòng '{raw_product_name}' shop có khá nhiều mẫu.\n\n"
-                    f"🌟 **Nổi bật nhất** là {best_match['name']} với giá khoảng **{price_suggest} VNĐ**.\n\n"
-                    f"Ngoài ra, shop còn có: {names}. Bạn quan tâm mẫu nào trong số này ạ?")
+                # Trường hợp có nhiều biến thể (ví dụ nhiều màu, nhiều dung lượng)
+                msg = f"Dạ, mẫu **{product_name}** của hãng {proudct_thuonghieu} shop đang có các phiên bản sau:\n\n"
+                buttons = []
+                
+                for var in variants:
+                    v_price = "{:,.0f}".format(var['gia'])
+                    v_sku = var['sku']
+                    msg += f"🔹 Mã `{v_sku}`: **{v_price} VNĐ**\n"
                     
-                dispatcher.utter_message(text=msg)
-                events.append(SlotSet("product_name", best_match['name']))
+                    # SỬA LỖI PAYLOAD: Sử dụng dấu nháy đơn bao ngoài dấu nháy kép cho JSON
+                    payload = f'/ask_specs{{"product_bienthe": "{v_sku}"}}'
+                    buttons.append({
+                        "title": f"Cấu hình {v_sku}",
+                        "payload": payload
+                    })
+                
+                msg += "\nBạn quan tâm đến phiên bản nào trong số này ạ?"
+                dispatcher.utter_message(text=msg, buttons=buttons)
 
-        except mysql.connector.Error as err:
+            # Lưu tên sản phẩm chuẩn vào slot
+            events.append(SlotSet("product_name", product_name))
+
+        except Exception as err:
             print(f"Lỗi thực thi: {err}")
-            dispatcher.utter_message(text="Rất xin lỗi, hệ thống dữ liệu của shop đang gặp chút trục trặc. Bạn thử lại sau nhé!")
+            dispatcher.utter_message(text="Hệ thống đang bận, bạn vui lòng thử lại sau nhé!")
         
         finally:
-            # --- Đóng kết nối an toàn ---
-            if cursor:
-                cursor.close()
-            if connection and connection.is_connected():
-                connection.close()
+            if cursor: cursor.close()
+            if connection and connection.is_connected(): connection.close()
 
         return events
+
+class ActionGetProductSpecs(Action):
+    def name(self) -> Text:
+        return "action_get_product_specs"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+            
+        cursor = None
+        connection = get_db_connection()
+        if not connection:
+            return []
+
+        try:
+            cursor = connection.cursor(dictionary=True)
+
+            # 1. Lấy Entity từ tracker (Ưu tiên SKU nếu khách nhấn từ nút bấm báo giá)
+            raw_name = next(tracker.get_latest_entity_values("product_name"), None)
+            raw_bienthe = next(tracker.get_latest_entity_values("product_bienthe"), None)
+
+            if not raw_name and not raw_bienthe:
+                raw_name = tracker.get_slot("product_name")
+
+            d_out = None
+            t_in = None
+            error_msg = None
+
+            # 2. Logic tìm kiếm tương tự ActionGetProductPrice
+            if raw_bienthe:
+                # Nếu có SKU, tìm chính xác cấu hình của biến thể đó
+                _, t_in, d_out, error_msg = find_products_in_db(tracker, cursor, 'product_bienthe', raw_bienthe)
+            elif raw_name:
+                # Nếu khách chỉ nói tên chung chung, tìm theo tên sản phẩm
+                _, t_in, d_out, error_msg = find_products_in_db(tracker, cursor, 'product_name', raw_name)
+            else:
+                dispatcher.utter_message(text="Bạn muốn xem cấu hình của sản phẩm nào ạ?")
+                return []
+
+            # Kiểm tra kết quả trả về
+            if error_msg or not d_out:
+                msg = error_msg if error_msg else f"Tiếc quá, shop chưa có thông số cho sản phẩm này."
+                dispatcher.utter_message(text=msg)
+                return []
+
+            # 3. Truy vấn lấy thông số từ VIEW
+            # d_out lúc này đã là ID đơn (id_sp hoặc id_bienthe)
+            if t_in == 'product_name':
+                # Nếu tìm theo tên, lấy biến thể đầu tiên của sản phẩm đó để hiện cấu hình mẫu
+                query = "SELECT * FROM view_chi_tiet_san_pham WHERE id_sp = %s LIMIT 1"
+            else:
+                # Nếu tìm theo biến thể, lấy đúng cấu hình của biến thể đó
+                query = "SELECT * FROM view_chi_tiet_san_pham WHERE id_bienthe = %s"
+
+            cursor.execute(query, (d_out,))
+            result = cursor.fetchone()
+
+            if result and result.get('thongsokythuat'):
+                # Giải mã JSON
+                try:
+                    specs = json.loads(result['thongsokythuat'])
+                except Exception:
+                    specs = {}
+
+                msg = f"⚙️ **Thông số: {result['ten_san_pham']}**\n"
+                msg += f"🔹 SKU: `{result['sku']}` | Loại: {result['ten_loai']}\n"
+                msg += "----------------------------\n"
+
+                if specs:
+                    for key, value in specs.items():
+                        display_key = key.replace("_", " ").capitalize()
+                        msg += f"📍 {display_key}: {value}\n"
+                else:
+                    msg += "Dữ liệu cấu hình đang được cập nhật..."
+
+                dispatcher.utter_message(text=msg)
+            else:
+                product_label = result['ten_san_pham'] if result else "này"
+                dispatcher.utter_message(text=f"Dạ, mẫu {product_label} hiện chưa có bảng thông số chi tiết ạ.")
+
+        except Exception as e:
+            print(f"Lỗi ActionGetProductSpecs: {e}")
+            dispatcher.utter_message(text="Có lỗi khi hiển thị cấu hình, bạn đợi shop chút nhé!")
+        
+        finally:
+            if cursor: cursor.close()
+            if connection and connection.is_connected(): connection.close()
+
+        return []
 
 class ActionGetProductDescription(Action):
     def name(self) -> Text:

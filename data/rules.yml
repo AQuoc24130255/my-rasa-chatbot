@@ -43,6 +43,10 @@ rules:
   - intent: ask_price
   - action: action_get_product_price   
 
+- rule: Trả lời cấu hình khi khách hỏi
+  steps:
+  - intent: ask_specs
+  - action: action_get_product_specs
 
 - rule: Trả lời mô tả sản phẩm khi khách hỏi
   steps:

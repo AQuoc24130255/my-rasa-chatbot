@@ -11,15 +11,19 @@ intents:
   - nlu_fallback
   - out_of_scope
   - ask_price
+  - ask_specs
   - ask_description
   - ask_product_type
   - ask_count_by_type
   - show_products_by_type
   - browse_shop
+  
 
 entities:
   - product_name # <-- Khai báo để Bot nhận diện "áo thun", "quần jean"
   - product_type
+  - product_thuonghieu
+  - product_bienthe
 
 slots:
   product_name: # <-- Lưu trữ tên sản phẩm khách hỏi để gửi cho MySQL
@@ -34,6 +38,19 @@ slots:
     mappings:
       - type: from_entity
         entity: product_type
+  product_thuonghieu:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: product_thuonghieu
+  product_bienthe:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: product_bienthe
+  
 
 responses:
   utter_greet:
@@ -134,6 +151,7 @@ responses:
 
 actions:
   - action_get_product_price # <-- Tên Action Python sẽ gọi vào MySQL
+  - action_get_product_specs
   - action_get_product_description
   - action_get_product_type
   - action_count_product_by_type

@@ -68,6 +68,13 @@ stories:
   - intent: ask_price
   - action: action_get_product_price
 
+- story: khách hỏi giá sau đó hỏi cấu hình
+  steps:
+    - intent: ask_price
+    - action: action_get_product_price
+    - intent: ask_specs
+    - action: action_get_product_specs
+
 
 - story: khách hỏi giá sau đó hỏi thêm mô tả chi tiết
   steps:
