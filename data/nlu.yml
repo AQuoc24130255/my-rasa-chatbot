@@ -402,6 +402,11 @@ nlu:
     - card
     - card do hoa
     - card đồ họa
+    - CPU
+    - cpu
+    - chuột
+    - mouse
+    - bàn phím
 
 - lookup: product_thuonghieu
   examples: |

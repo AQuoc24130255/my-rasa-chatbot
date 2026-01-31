@@ -1,0 +1,30 @@
+[
+  {
+    "name": "product_bienthe",
+    "pattern": "[A-Z0-9]{2,}-[A-Z0-9]{2,}-[A-Z0-9]{2,}  # Khớp với định dạng SKU như ASU-PHX-1650"
+  },
+  {
+    "name": "product_name",
+    "pattern": "(\\bVengeance\\ RGB\\ DDR5\\b|\\bVengeance\\ LPX\\ DDR4\\b|\\bDominator\\ Titanium\\b|\\bVengeance\\ SODIMM\\ \\(Laptop\\)\\b|\\bDominator\\ Platinum\\ RGB\\b|\\bFURY\\ Beast\\ DDR5\\b|\\bFURY\\ Renegade\\b|\\bFURY\\ Impact\\ \\(Laptop\\)\\b|\\bNV2\\ PCIe\\ 4\\.0\\b|\\bFURY\\ Beast\\ DDR4\\b|\\bTrident\\ Z5\\ RGB\\b|\\bRipjaws\\ S5\\b|\\bTrident\\ Z\\ Royal\\b|\\bFlare\\ X5\\ \\(AMD\\)\\b|\\bRipjaws\\ V\\ DDR4\\b|\\bCore\\ i9\\-14900K\\b|\\bCore\\ i7\\-14700K\\b|\\bCore\\ i5\\-13400F\\b|\\bCore\\ i3\\-12100\\b|\\bCore\\ Ultra\\ 9\\ 285K\\b|\\bRyzen\\ 9\\ 7950X3D\\b|\\bRyzen\\ 7\\ 7800X3D\\b|\\bRyzen\\ 5\\ 7600\\b|\\bRyzen\\ 9\\ 5900X\\b|\\bRyzen\\ 7\\ 5700G\\b|\\bChip\\ M4\\b|\\bChip\\ M3\\ Pro\\b|\\bChip\\ M3\\ Max\\b|\\bChip\\ M2\\ Air\\b|\\bChip\\ M1\\ Ultra\\b|\\bROG\\ Strix\\ RTX\\ 4090\\b|\\bTUF\\ Gaming\\ RTX\\ 4070\\ Ti\\b|\\bDual\\ RTX\\ 4060\\b|\\bProArt\\ RTX\\ 4080\\b|\\bPhoenix\\ GTX\\ 1650\\b|\\bGeForce\\ RTX\\ 4080\\ Super\\ Suprim\\ X\\b|\\bRTX\\ 4070\\ Gaming\\ X\\ Slim\\b|\\bRTX\\ 4060\\ Ventus\\ 2X\\b|\\bRadeon\\ RX\\ 7900\\ XTX\\ Gaming\\ Trio\\b|\\bGeForce\\ GT\\ 1030\\b|\\bRTX\\ 4090\\ AORUS\\ Master\\b|\\bRTX\\ 4070\\ EAGLE\\ OC\\b|\\bRTX\\ 4060\\ Ti\\ Gaming\\ OC\\b|\\bRadeon\\ RX\\ 7600\\ XT\\ Gaming\\ OC\\b|\\bGeForce\\ RTX\\ 3050\\ Windforce\\b)"
+  },
+  {
+    "name": "loai_san_pham",
+    "pattern": "(\\blaptop\\b|\\bmay\\ tinh\\b|\\bRAM\\b|\\bram\\b|\\bmàn\\ hình\\b|\\bman\\ hinh\\b|\\bcard\\b|\\bcard\\ do\\ hoa\\b|\\bcard\\ đồ\\ họa\\b)"
+  },
+  {
+    "name": "product_thuonghieu",
+    "pattern": "(\\bCorsair\\b|\\bKingston\\b|\\bG\\.Skill\\b|\\bIntel\\b|\\bAMD\\b|\\bApple\\b|\\bASUS\\b|\\bMSI\\b|\\bGigabyte\\b|\\bcorsair\\b|\\bkingston\\b|\\bg\\.skill\\b|\\bintel\\b|\\bamd\\b|\\bapple\\b|\\basus\\b|\\bmsi\\b|\\bgigabyte\\b)"
+  },
+  {
+    "name": "product_bienthe",
+    "pattern": "(\\bCOR\\-VNG\\-5\\-32B\\b|\\bCOR\\-VNG\\-5\\-32W\\b|\\bKGN\\-BST\\-5\\-16\\b|\\bKGN\\-BST\\-4\\-8\\b|\\bGSK\\-Z5R\\-32B\\b|\\bGSK\\-Z5R\\-32S\\b|\\bGSK\\-RV4\\-32\\b|\\bINT\\-14900K\\-B\\b|\\bINT\\-14900K\\-T\\b|\\bINT\\-ULT\\-9\\-B\\b|\\bAMD\\-7950X3D\\b|\\bAMD\\-7800X3D\\b|\\bAMD\\-7600\\-B\\b|\\bAPL\\-M4\\-10C\\b|\\bAPL\\-M3P\\-12C\\b|\\bASU\\-PRO\\-4080\\b|\\bASU\\-PHX\\-1650\\b|\\bMSI\\-SUP\\-4080S\\b|\\bMSI\\-SLM\\-4070\\b|\\bMSI\\-VTS\\-4060\\b|\\bMSI\\-TRI\\-7900X\\b)"
+  },
+  {
+    "name": "attribute_name",
+    "pattern": "(\\bRAM\\b|\\bCPU\\b|\\bBộ\\ nhớ\\b|\\bỔ\\ cứng\\b|\\bMàu\\ sắc\\b|\\bTần\\ số\\ quét\\b|\\bĐộ\\ phân\\ giải\\b|\\bDung\\ lượng\\b)"
+  },
+  {
+    "name": "attribute_value",
+    "pattern": "(\\b8GB\\b|\\b16GB\\b|\\b512GB\\b|\\b1TB\\b|\\bCore\\ i5\\b|\\bRyzen\\ 7\\b|\\b144Hz\\b|\\b4K\\b|\\bĐen\\b|\\bTrắng\\b)"
+  }
+]

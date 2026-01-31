@@ -63,6 +63,33 @@ stories:
   - intent: goodbye
   - action: utter_goodbye
 
+- story: khách xem sản phẩm theo hướng dẫn
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_browse_shop
+  - action: action_browse_shop
+  - intent: ask_show_brand_by_type
+    entities:
+      - loai_san_pham: "laptop"
+  - action: action_show_brand_by_type
+  - intent: ask_show_product_by_brand
+    entities:
+      - product_thuonghieu: "Dell"
+  - action: action_show_product_by_brand
+  - intent: ask_get_product_description
+    entities:
+      - product_name: "Vengeance RGB DDR5"
+  - action: action_get_product_description
+  - intent: ask_get_product_price_specs
+    entities:
+      - product_bienthe: "DELL-XPS-13"
+  - action: action_get_product_price_specs
+  
+
+  
+
+
 - story: Khách tìm laptop theo hãng và xem chi tiết
   steps:
   - intent: ask_show_brand_by_type
