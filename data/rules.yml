@@ -2,6 +2,11 @@ version: "3.1"
 
 rules:
 
+- rule: Phản hồi khi khách chào hỏi
+  steps:
+  - intent: greet
+  - action: utter_greet
+
 - rule: Say goodbye anytime the user says goodbye
   steps:
   - intent: goodbye
@@ -12,64 +17,59 @@ rules:
   - intent: bot_challenge
   - action: utter_iamabot
 
-- rule: Phản hồi khi khách chào hỏi
-  steps:
-  - intent: greet
-  - action: utter_greet
-
-- rule: An ủi khi khách hàng có tâm trạng tệ
-  steps:
-  - intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help    
-
-- rule: Chia sẻ niềm vui với khách
-  steps:
-  - intent: mood_great
-  - action: utter_happy    
-
 - rule: Yêu cầu khách diễn đạt lại khi không hiểu
   steps:
   - intent: nlu_fallback
-  - action: utter_please_rephrase
+  - action: utter_ask_rephrase
 
 - rule: Thông báo khi câu hỏi nằm ngoài phạm vi hỗ trợ
   steps:
   - intent: out_of_scope
-  - action: utter_out_of_scope   
+  - action: utter_out_of_scope 
 
-- rule: Trả lời giá khi khách hỏi
-  steps:
-  - intent: ask_price
-  - action: action_get_product_price   
-
-- rule: Trả lời cấu hình khi khách hỏi
-  steps:
-  - intent: ask_specs
-  - action: action_get_product_specs
-
-- rule: Trả lời mô tả sản phẩm khi khách hỏi
-  steps:
-  - intent: ask_description
-  - action: action_get_product_description
-
-- rule: Tra cứu loại sản phẩm khi khách hỏi
-  steps:
-  - intent: ask_product_type
-  - action: action_get_product_type
-
-- rule: Đáp lại yêu cầu đếm sản phẩm theo loại
-  steps:
-  - intent: ask_count_by_type
-  - action: action_count_product_by_type
-
-- rule: Hiển thị sản phẩm theo loại
-  steps:
-  - intent: show_products_by_type
-  - action: action_show_products_by_type
+# --- LUỒNG TRA CỨU CỬA HÀNG ---
 
 - rule: Hiển thị tổng quan cửa hàng và danh mục
   steps:
-  - intent: browse_shop
+  - intent: ask_browse_shop
   - action: action_browse_shop
+
+- rule: Xem danh sách hãng sản xuất theo loại sản phẩm
+  steps:
+  - intent: ask_show_brand_by_type
+  - action: action_show_brand_by_type
+
+- rule: Xem danh sách sản phẩm theo thương hiệu
+  steps:
+  - intent: ask_show_product_by_brand
+  - action: action_show_product_by_brand
+
+# --- LUỒNG CHI TIẾT SẢN PHẨM ---
+
+- rule: Xem mô tả chi tiết sản phẩm
+  steps:
+  - intent: ask_get_product_description
+  - action: action_get_product_description
+
+- rule: Xem giá và cấu hình kỹ thuật cụ thể (SKU)
+  steps:
+  - intent: ask_get_product_price_specs
+  - action: action_get_product_price_specs
+
+# --- LUỒNG TÌM KIẾM NÂNG CAO ---
+
+- rule: Tìm kiếm sản phẩm theo thông số kỹ thuật (RAM, CPU,...)
+  steps:
+  - intent: ask_search_product_by_specs
+  - action: action_search_product_by_specs
+
+- rule: So sánh hai hoặc nhiều sản phẩm
+  steps:
+  - intent: ask_compare_products
+  - action: action_compare_products
+
+- rule: Tìm kiếm sản phẩm tương đương/tương tự
+  steps:
+  - intent: ask_search_similar_products
+  - action: action_search_similar_products
 

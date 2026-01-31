@@ -8,22 +8,24 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
-  - nlu_fallback
   - out_of_scope
-  - ask_price
-  - ask_specs
-  - ask_description
-  - ask_product_type
-  - ask_count_by_type
-  - show_products_by_type
-  - browse_shop
+  - ask_browse_shop
+  - ask_show_brand_by_type
+  - ask_show_product_by_brand
+  - ask_get_product_description
+  - ask_get_product_price_specs
+  - ask_search_product_by_specs
+  - ask_compare_products
+  - ask_search_similar_products
   
 
 entities:
-  - product_name # <-- Khai báo để Bot nhận diện "áo thun", "quần jean"
-  - product_type
+  - loai_san_pham
   - product_thuonghieu
+  - product_name
   - product_bienthe
+  - attribute_name
+  - attribute_value
 
 slots:
   product_name: # <-- Lưu trữ tên sản phẩm khách hỏi để gửi cho MySQL
@@ -32,12 +34,12 @@ slots:
     mappings:
       - type: from_entity
         entity: product_name
-  product_type:
+  loai_san_pham:
     type: text
     influence_conversation: true
     mappings:
       - type: from_entity
-        entity: product_type
+        entity: loai_san_pham
   product_thuonghieu:
     type: text
     influence_conversation: true
@@ -50,7 +52,18 @@ slots:
     mappings:
       - type: from_entity
         entity: product_bienthe
-  
+  attribute_name:
+    type: text
+    influence_conversation: false # Thường chỉ dùng để truy vấn, không đổi luồng hội thoại
+    mappings:
+      - type: from_entity
+        entity: attribute_name
+  attribute_value:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: attribute_value
 
 responses:
   utter_greet:
@@ -150,13 +163,14 @@ responses:
   - text: "Dạ, mục này shop chưa rõ. Bạn cần tư vấn về giá hay xem sản phẩm ạ?"
 
 actions:
-  - action_get_product_price # <-- Tên Action Python sẽ gọi vào MySQL
-  - action_get_product_specs
-  - action_get_product_description
-  - action_get_product_type
-  - action_count_product_by_type
-  - action_show_products_by_type
   - action_browse_shop
+  - action_show_brand_by_type
+  - action_show_product_by_brand
+  - action_get_product_description
+  - action_get_product_price_specs
+  - action_search_product_by_specs
+  - action_compare_products
+  - action_search_similar_products
 
 session_config:
   session_expiration_time: 60

@@ -2,10 +2,12 @@ version: "3.1"
 
 stories:
 
-- story: happy path
+- story: Happy path - Chào hỏi và duyệt shop
   steps:
   - intent: greet
   - action: utter_greet
+  - intent: ask_browse_shop
+  - action: action_browse_shop
   - intent: mood_great
   - action: utter_happy
 
@@ -61,59 +63,53 @@ stories:
   - intent: goodbye
   - action: utter_goodbye
 
-- story: khách hỏi giá và hài lòng
+- story: Khách tìm laptop theo hãng và xem chi tiết
   steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: ask_price
-  - action: action_get_product_price
+  - intent: ask_show_brand_by_type
+    entities:
+    - loai_san_pham: "laptop"
+  - action: action_show_brand_by_type
+  - intent: ask_show_product_by_brand
+    entities:
+    - product_thuonghieu: "Dell"
+  - action: action_show_product_by_brand
+  - intent: ask_get_product_price_specs
+    entities:
+    - product_bienthe: "DELL-XPS-13"
+  - action: action_get_product_price_specs
 
-- story: khách hỏi giá sau đó hỏi cấu hình
+- story: Luồng tìm kiếm nâng cao và so sánh
   steps:
-    - intent: ask_price
-    - action: action_get_product_price
-    - intent: ask_specs
-    - action: action_get_product_specs
+  - intent: ask_search_product_by_specs
+    entities:
+    - loai_san_pham: "ram"
+    - attribute_value: "16GB"
+  - action: action_search_product_by_specs
+  - intent: ask_compare_products
+  - action: action_compare_products
+  - intent: affirm
+  - action: utter_happy
 
-
-- story: khách hỏi giá sau đó hỏi thêm mô tả chi tiết
+- story: Khách chê đắt - Gợi ý sản phẩm tương tự (Retention)
   steps:
-  - intent: ask_price
-  - action: action_get_product_price
-  - intent: ask_description
-  - action: action_get_product_description
-  - intent: goodbye
-  - action: utter_goodbye
-
-- story: khách hỏi mô tả nhưng bot không rõ nên hỏi lại
-  steps:
-  - intent: ask_description
-  - action: action_get_product_description
+  - intent: ask_get_product_price_specs
+  - action: action_get_product_price_specs
   - intent: deny
-  - action: utter_ask_rephrase
-  - intent: ask_description
-  - action: action_get_product_description
-
-# --- NHÓM KHÁM PHÁ SẢN PHẨM (Discovery) ---
-
-- story: khách muốn xem tất cả sản phẩm shop có
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: browse_shop
-  - action: action_browse_shop
-  - intent: goodbye
-  - action: utter_goodbye
+  - action: action_search_similar_products
+  - intent: affirm
+  - action: utter_happy
 
 
 # --- NHÓM XỬ LÝ TÌNH HUỐNG NGOẠI LỆ (Edge Cases) ---
 
-- story: khách hỏi linh tinh (ngoài phạm vi) sau đó quay lại hỏi giá
+- story: Khách hỏi linh tinh rồi quay lại mua sắm
   steps:
   - intent: out_of_scope
   - action: utter_out_of_scope
-  - intent: ask_price
-  - action: action_get_product_price
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_browse_shop
+  - action: action_browse_shop
 
 
 - story: khách kiểm tra bot là ai
@@ -123,12 +119,21 @@ stories:
   - intent: greet
   - action: utter_greet
 
-- story: xử lý khi bot không hiểu ý (fallback)
+- story: Kiểm tra Bot sau đó hỏi cấu hình
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+  - intent: ask_get_product_price_specs
+  - action: action_get_product_price_specs
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: Xử lý khi bot không hiểu (Recovery Path)
   steps:
   - intent: nlu_fallback
-  - action: utter_please_rephrase
-  - intent: ask_price
-  - action: action_get_product_price
+  - action: utter_ask_rephrase
+  - intent: ask_browse_shop
+  - action: action_browse_shop
  
 
 # --- LUỒNG 1: TỪ CẢM XÚC SANG MUA SẮM (Chuyển đổi tâm trạng) ---
@@ -141,7 +146,7 @@ stories:
   - action: utter_did_that_help
   - intent: affirm
   - action: utter_happy
-  - intent: browse_shop
+  - intent: ask_browse_shop
   - action: action_browse_shop
   - intent: goodbye
   - action: utter_goodbye
@@ -154,33 +159,32 @@ stories:
 - story: khách hỏi sai bị fallback rồi mới tìm được đúng sản phẩm
   steps:
   - intent: nlu_fallback
-  - action: utter_please_rephrase
-  - intent: ask_description
+  - action: utter_ask_rephrase
+  - intent: ask_get_product_description
   - action: action_get_product_description
 
-
 # --- LUỒNG 5: HỎI XOÁY ĐÁP XOAY (Kiểm tra năng lực bot) ---
-- story: khách hỏi bot là ai rồi mới hỏi giá
+- story: khách hỏi bot là ai rồi mới hỏi thông tin sản phẩm
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
   - intent: mood_great
   - action: utter_happy
-  - intent: ask_price
-  - action: action_get_product_price
+  - intent: ask_get_product_description
+  - action: action_get_product_description
   - intent: goodbye
   - action: utter_goodbye
 
-- story: khách hỏi sản phẩm lạ và chọn xem danh sách thay thế
+- story: khách hỏi sản phẩm không có và chọn xem danh sách theo loại (Fallback nội bộ)
   steps:
-  - intent: ask_price
-  - action: action_get_product_price # Action này sẽ trả về thông báo "Không tìm thấy"
-  - intent: show_products_by_type
-  - action: action_show_products_by_type
+  - intent: ask_get_product_price_specs
+  - action: action_get_product_price_specs # Action trả về "Không tìm thấy" + Nút bấm loại SP
+  - intent: ask_show_brand_by_type
+  - action: action_show_brand_by_type
 
-- story: khách hỏi sản phẩm lạ và chọn xem toàn bộ sản phẩm
+- story: khách hỏi sản phẩm không có và chọn quay về danh mục chính
   steps:
-  - intent: ask_price
-  - action: action_get_product_price # Action này sẽ trả về thông báo "Không tìm thấy"
-  - intent: browse_shop
+  - intent: ask_get_product_price_specs
+  - action: action_get_product_price_specs # Action trả về "Không tìm thấy" + Nút bấm Browse
+  - intent: ask_browse_shop
   - action: action_browse_shop
