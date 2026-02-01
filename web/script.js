@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatBox = document.getElementById("chat-box");
     // Thay URL này bằng link Codespace của bạn nếu chạy trên GitHub
     const RASA_API_URL = "https://ideal-trout-r7p69j7v5gwf594w-5005.app.github.dev/webhooks/rest/webhook";
-
     // 1. CHỨC NĂNG ẨN/HIỆN
     launcher.addEventListener("click", () => {
         chatContainer.classList.remove("hidden");

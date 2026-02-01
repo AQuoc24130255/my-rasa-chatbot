@@ -34,25 +34,47 @@ from unidecode import unidecode
 import re
 from thefuzz import fuzz, process
 import json
+import os
+from dotenv import load_dotenv
 
-# Tạo một function dùng chung ở đầu file
+
+load_dotenv()
+
 def get_db_connection():
     try:
-        return mysql.connector.connect(
-            host='127.0.0.1',
-            user='gemini_user',
-            password='123456',
-            database='gemini_shop'
+        connection = mysql.connector.connect(
+            host=os.getenv("TIDB_HOST"),
+            port=int(os.getenv("TIDB_PORT")),
+            user=os.getenv("TIDB_USER"),
+            password=os.getenv("TIDB_PASSWORD"),
+            database=os.getenv("TIDB_DB_NAME"),
+            # TiDB Cloud yêu cầu SSL để đảm bảo an toàn
+            ssl_disabled=False 
         )
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
+        return connection
+    except Exception as e:
+        print(f"❌ Lỗi kết nối TiDB: {e}")
         return None
+# Tạo một function dùng chung ở đầu file
+# def get_db_connection():
+#     try:
+#         return mysql.connector.connect(
+#             host='127.0.0.1',
+#             user='gemini_user',
+#             password='123456',
+#             database='gemini_shop'
+#         )
+#     except mysql.connector.Error as err:
+#         print(f"Error: {err}")
+#         return None
 
-def get_id(cursor, type_input, data):
+
+def get_id(cursor, type_input, data, context_id=None):
     """
-    Trả về ID và tên chuẩn dựa trên loại đầu vào.
+    Trả về ID và tên chuẩn dựa trên loại đầu vào và ngữ cảnh (Category ID).
     - type_input: 'loai', 'hang', 'san_pham', 'sku'
     - data: chuỗi tìm kiếm
+    - context_id: ID loại sản phẩm (dùng khi tìm 'hang' để tránh trùng lặp)
     Returns: type_input, id_output, name_output, error_msg
     """
     if not data:
@@ -60,28 +82,11 @@ def get_id(cursor, type_input, data):
 
     search_term = unidecode(str(data)).lower().strip()
     
-    # Cấu hình bảng và cột dựa trên type_input
     config = {
-        'loai': {
-            'table': 'DANHMUC',
-            'id_col': 'id_loai',
-            'name_col': 'ten_loai'
-        },
-        'hang': {
-            'table': 'THUONGHIEU',
-            'id_col': 'id_thuonghieu',
-            'name_col': 'ten' # Theo schema bạn cung cấp: THUONGHIEU.ten
-        },
-        'san_pham': {
-            'table': 'SPCHINH',
-            'id_col': 'id_sp',
-            'name_col': 'ten'
-        },
-        'sku': {
-            'table': 'BIENTHESP',
-            'id_col': 'id_bienthe',
-            'name_col': 'sku'
-        }
+        'loai': {'table': 'v_DANHMUC', 'id_col': 'id_loai', 'name_col': 'ten_loai'},
+        'hang': {'table': 'v_THUONGHIEU', 'id_col': 'id_thuonghieu', 'name_col': 'ten'},
+        'san_pham': {'table': 'v_SPCHINH', 'id_col': 'id_sp', 'name_col': 'ten'},
+        'sku': {'table': 'v_BIENTHESP', 'id_col': 'id_bienthe', 'name_col': 'sku'}
     }
 
     if type_input not in config:
@@ -92,28 +97,50 @@ def get_id(cursor, type_input, data):
     try:
         # --- BƯỚC 1: SQL LIKE (Tìm nhanh) ---
         query_like = f"SELECT {cfg['id_col']}, {cfg['name_col']} FROM {cfg['table']} WHERE {cfg['name_col']} LIKE %s"
-        cursor.execute(query_like, (f"%{data}%",))
+        params = [f"%{data}%"]
+
+        # Nếu tìm hãng và có ID loại, lọc thêm để lấy đúng id_thuonghieu duy nhất
+        if type_input == 'hang' and context_id:
+            query_like += " AND id_loai = %s"
+            params.append(context_id)
+
+        cursor.execute(query_like, tuple(params))
+        # CHỈ FETCH KHI CÓ KẾT QUẢ (Sửa lỗi No result set)
         result = cursor.fetchone()
+
+        # Dọn dẹp an toàn: Chỉ fetchall nếu vẫn còn dòng chưa đọc
+        while cursor.nextset():
+            pass
+        
 
         if result:
             return type_input, result[cfg['id_col']], result[cfg['name_col']], None
 
-        # --- BƯỚC 2: THEFUZZ (Tìm mờ nếu LIKE thất bại) ---
-        cursor.execute(f"SELECT {cfg['id_col']}, {cfg['name_col']} FROM {cfg['table']}")
-        all_rows = cursor.fetchall()
+        # --- BƯỚC 2: THEFUZZ (Tìm mờ) ---
+        # Lọc sẵn dữ liệu theo context_id nếu có để tăng độ chính xác khi tìm mờ
+        query_all = f"SELECT {cfg['id_col']}, {cfg['name_col']} FROM {cfg['table']}"
+        if type_input == 'hang' and context_id:
+            query_all += f" WHERE id_loai = {context_id}"
+            
+        cursor.execute(query_all)
+        all_rows = cursor.fetchall() if cursor.with_rows else []
 
         if all_rows:
-            # Tạo dictionary để so khớp mờ
             choices = {unidecode(row[cfg['name_col']]).lower(): row for row in all_rows}
             best_match = process.extractOne(search_term, choices.keys(), scorer=fuzz.token_set_ratio)
 
-            if best_match and best_match[1] >= 75: # Ngưỡng tin cậy 75%
+            if best_match and best_match[1] >= 75:
                 matched_row = choices[best_match[0]]
                 return type_input, matched_row[cfg['id_col']], matched_row[cfg['name_col']], None
 
         return type_input, None, None, f"Không tìm thấy {type_input} nào khớp với '{data}'."
 
     except Exception as e:
+        # Khi lỗi xảy ra, hãy đảm bảo cursor sạch sẽ cho lệnh sau
+        if cursor:
+            try: cursor.fetchall()
+            except: pass
+        print(f"❌ Error in get_id: {e}")
         return type_input, None, None, f"Lỗi truy vấn: {str(e)}"
 
 # HÀM HELPER CHÍNH: Tìm kiếm sản phẩm thông minh
@@ -172,39 +199,40 @@ def get_product_view_by_id(cursor, id_sp):
     except Exception as e:
         return None, f"Lỗi truy vấn VIEW: {str(e)}"
 
-def count_product_by_thuonghieu(cursor, thuonghieu_input):
-    """
-    Sử dụng get_id để chuẩn hóa thương hiệu, sau đó đếm số sản phẩm chính từ VIEW.
-    Returns: id_th, ten_th, so_luong, list_sp, error
-    """
-    if not thuonghieu_input:
-        return None, None, 0, [], "Dữ liệu đầu vào trống."
+def count_product_by_thuonghieu(cursor, thuonghieu_input, loai_input, id_loai_context=None):
+    if not thuonghieu_input or not loai_input:
+        return None, None, 0, [], "Thiếu thông tin hãng hoặc loại."
 
     try:
-        # --- BƯỚC 1: CHUẨN HÓA THƯƠNG HIỆU QUA HÀM GET_ID ---
-        # Hàm get_id đã bao gồm cả SQL LIKE và TheFuzz
-        _, id_th, ten_th, error_msg = get_id(cursor, 'hang', thuonghieu_input)
+        # --- BƯỚC 1: CHUẨN HÓA THƯƠNG HIỆU ---
+        # get_id trả về id_th (ID chuẩn từ v_THUONGHIEU)
+        _, id_th, ten_th, error_msg = get_id(cursor, 'hang', thuonghieu_input, id_loai_context)
+        
+        while cursor.nextset(): pass
 
         if error_msg or not id_th:
             return None, None, 0, [], error_msg
 
-        # --- BƯỚC 2: TRUY VẤN SẢN PHẨM DỰA TRÊN ID THƯƠNG HIỆU ---
-        # Sử dụng id_thuonghieu (integer) giúp truy vấn nhanh hơn nhiều so với LIKE tên
-        query_sp = "SELECT DISTINCT id_sp, ten_san_pham FROM view_chi_tiet_san_pham WHERE ten_thuonghieu = %s"
-        cursor.execute(query_sp, (ten_th,))
+        # --- BƯỚC 2: TRUY VẤN SẢN PHẨM ---
+        # Sử dụng id_thuonghieu vì VIEW v_SPCHINH chỉ có cột này, không có cột 'brand'
+        query_sp = "SELECT ten FROM v_SPCHINH WHERE id_thuonghieu = %s AND id_loai = %s"
+        
+        cursor.execute(query_sp, (id_th, id_loai_context))
         list_results = cursor.fetchall()
 
         if not list_results:
             return id_th, ten_th, 0, [], None
 
-        list_sanpham = [item['ten_san_pham'] for item in list_results]
-        so_luong = len(list_sanpham)
-
-        return id_th, ten_th, so_luong, list_sanpham, None
+        # Trích xuất danh sách tên (cột 'ten' trong VIEW)
+        list_sanpham = [item['ten'] for item in list_results]
+        return id_th, ten_th, len(list_sanpham), list_sanpham, None
 
     except Exception as e:
-        print(f"Error in count_product_by_thuonghieu: {e}")
-        return None, None, 0, [], f"Lỗi hệ thống khi thống kê sản phẩm."
+        if cursor:
+            try: cursor.fetchall()
+            except: pass
+        print(f"❌ Error in count_product_by_thuonghieu: {e}")
+        return None, None, 0, [], f"Lỗi hệ thống: {str(e)}"
 
 def count_thuonghieu_by_type(cursor, loai_input):
     """
@@ -224,11 +252,11 @@ def count_thuonghieu_by_type(cursor, loai_input):
 
         # --- BƯỚC 2: TRUY VẤN THƯƠNG HIỆU TỪ VIEW ---
         # Sử dụng ten_loai chuẩn từ DB để đảm bảo kết quả chính xác 100%
-        query_th = "SELECT DISTINCT ten_thuonghieu FROM view_chi_tiet_san_pham WHERE ten_loai = %s"
-        cursor.execute(query_th, (ten_loai,))
+        query = "SELECT ten FROM v_THUONGHIEU WHERE ten_loai = %s"
+        cursor.execute(query, (ten_loai,))
         brand_results = cursor.fetchall()
 
-        list_ten_th = [b['ten_thuonghieu'] for b in brand_results]
+        list_ten_th = [b['ten'] for b in brand_results]
         so_luong_th = len(list_ten_th)
 
         return id_loai, ten_loai, so_luong_th, list_ten_th, None
@@ -268,23 +296,43 @@ def search_products_complex(cursor, loai_name=None, hang_name=None, thuoctinh=No
             return []
 
         # --- BƯỚC 3: LỌC THEO THUỘC TÍNH (SỬ DỤNG THEFUZZ) ---
-        if thuoctinh and giatri:
+        if giatri: # Chỉ cần có giá trị là ta bắt đầu lọc mờ
             final_results = []
-            search_attr = unidecode(str(thuoctinh)).lower().strip()
+            # Chuẩn hóa đầu vào của khách
+            search_attr = unidecode(str(thuoctinh)).lower().strip() if thuoctinh else ""
             search_val = unidecode(str(giatri)).lower().strip()
 
             for item in candidates:
-                # Lấy thuộc tính của biến thể hiện tại
-                cursor.execute("SELECT tenthuoctinh, giatri FROM THUOCTINHSP WHERE id_bienthe = %s", (item['id_bienthe'],))
-                db_attrs = cursor.fetchall()
+                # Lấy dữ liệu JSON trực tiếp từ view_chi_tiet_san_pham
+                # (Đã được xử lý ở các bước tạo View trước đó)
+                specs = item.get('thongsokythuat')
                 
-                for attr in db_attrs:
-                    attr_name_norm = unidecode(attr['tenthuoctinh']).lower()
-                    attr_val_norm = unidecode(attr['giatri']).lower()
+                # Nếu specs là chuỗi JSON, parse nó thành Dict
+                if isinstance(specs, str):
+                    try:
+                        specs = json.loads(specs)
+                    except:
+                        specs = {}
+
+                found = False
+                for key, val in specs.items():
+                    key_norm = unidecode(str(key)).lower()
+                    val_norm = unidecode(str(val)).lower()
                     
-                    # So khớp mờ
-                    if (fuzz.token_set_ratio(search_attr, attr_name_norm) >= 80 and 
-                        fuzz.token_set_ratio(search_val, attr_val_norm) >= 85):
+                    # So khớp mờ Giá trị (Bắt buộc > 85%)
+                    val_score = fuzz.partial_ratio(search_val, val_norm)
+                    
+                    if val_score >= 85:
+                        # Nếu khách có nói tên thuộc tính (ví dụ: 'ram' 8gb)
+                        if search_attr:
+                            key_score = fuzz.token_set_ratio(search_attr, key_norm)
+                            if key_score >= 80:
+                                found = True
+                        else:
+                            # Nếu khách chỉ nói '8gb', khớp giá trị là đủ
+                            found = True
+                    
+                    if found:
                         final_results.append(item)
                         break
             return final_results[:10]
@@ -306,7 +354,7 @@ def find_similar_products(cursor, ten_loai, gia_goc, id_bienthe_goc):
 
     query = """
         SELECT v.* FROM view_chi_tiet_san_pham v
-        JOIN DANHMUC d ON v.ten_loai = d.ten_loai
+        JOIN v_DANHMUC d ON v.ten_loai = d.ten_loai
         WHERE v.ten_loai = %s 
           AND v.gia BETWEEN %s AND %s
           AND v.id_bienthe != %s
@@ -334,30 +382,35 @@ def create_button(title, intent, entities_dict):
     }
 
 def get_product_summary(cursor, id_bienthe, specs_json=None):
-    """
-    Ưu tiên lấy từ JSON, nếu không có sẽ lấy từ bảng THUOCTINHSP.
-    """
     specs_dict = {}
 
-    # 1. Thử giải mã JSON nếu có
+    # Bước 1: Thử lấy từ tham số specs_json (Dữ liệu từ VIEW)
     if specs_json:
-        try:
-            specs_dict = json.loads(specs_json) if isinstance(specs_json, str) else specs_json
-        except Exception:
-            specs_dict = {}
+        if isinstance(specs_json, dict):
+            specs_dict = specs_json
+        elif isinstance(specs_json, str) and specs_json.strip():
+            try:
+                specs_dict = json.loads(specs_json)
+            except:
+                # Nếu không phải JSON, trả về luôn chuỗi đó
+                return specs_json
 
-    # 2. Nếu JSON trống, truy vấn bảng THUOCTINHSP
+    # Bước 2: Nếu vẫn trống, thử tìm trong v_THUOCTINHSP
     if not specs_dict and cursor and id_bienthe:
-        query = "SELECT tenthuoctinh, giatri FROM THUOCTINHSP WHERE id_bienthe = %s"
+        query = "SELECT giatri FROM v_THUOCTINHSP WHERE id_bienthe = %s LIMIT 1"
         cursor.execute(query, (id_bienthe,))
-        rows = cursor.fetchall()
-        # Chuyển list rows thành dict
-        specs_dict = {row['tenthuoctinh']: row['giatri'] for row in rows}
+        row = cursor.fetchone()
+        if row and row['giatri']:
+            val = row['giatri']
+            try:
+                specs_dict = json.loads(val) if isinstance(val, str) else val
+            except:
+                return str(val)
 
-    if not specs_dict:
-        return "Sản phẩm chính hãng, cấu hình tiêu chuẩn."
+    # Bước 3: Format hiển thị
+    if not specs_dict or not isinstance(specs_dict, dict):
+        return "⚠️ Thông số kỹ thuật đang được cập nhật..."
 
-    # 3. Format hiển thị
     icon_map = {
         "cpu": "💻 CPU", "ram": "⚡ RAM", "ssd": "💾 Ổ cứng",
         "vga": "🎮 Đồ họa", "screen": "🖥️ Màn hình", "bus": "🚀 Bus",
@@ -366,10 +419,13 @@ def get_product_summary(cursor, id_bienthe, specs_json=None):
 
     summary_lines = []
     for key, value in specs_dict.items():
-        # Tìm icon phù hợp (xử lý không dấu để map chính xác hơn)
-        clean_key = unidecode(key).lower()
-        header = icon_map.get(clean_key, f"🔹 {key}")
-        summary_lines.append(f"{header}: {value}")
+        clean_key = unidecode(str(key)).lower()
+        header = "🔹 " + str(key)
+        for k_icon, icon_val in icon_map.items():
+            if k_icon in clean_key:
+                header = icon_val
+                break
+        summary_lines.append(f"{header}: **{value}**")
 
     return "\n".join(summary_lines)
 
@@ -605,20 +661,30 @@ class ActionShowProductByBrand(Action):
             return []
 
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor(dictionary=True,buffered=True)
 
             # 1. Lấy thông tin hãng từ thực thể hoặc Slot
             brand_input = next(tracker.get_latest_entity_values("product_thuonghieu"), None)
+
             if not brand_input:
                 brand_input = tracker.get_slot("product_thuonghieu")
 
-            if not brand_input:
-                dispatcher.utter_message(text="❓ Bạn muốn xem sản phẩm của hãng nào ạ?")
+            # Lấy thêm loại sản phẩm từ Slot (vì đã được lưu từ bước trước)
+            type_context = tracker.get_slot("loai_san_pham")
+
+            if not brand_input or not type_context:
+                dispatcher.utter_message(text="❓ Bạn muốn xem sản phẩm của hãng nào và thuộc dòng nào ạ?")
                 return []
 
+            # --- Lấy id_loai từ VIEW v_DANHMUC ---
+            query_loai = "SELECT id_loai FROM v_DANHMUC WHERE ten_loai = %s LIMIT 1"
+            cursor.execute(query_loai, (type_context,))
+            res_loai = cursor.fetchone()
+            id_loai_context = res_loai['id_loai'] if res_loai else None
+            
             # 2. Sử dụng helper để chuẩn hóa tên hãng và đếm sản phẩm
             # Trả về: id, tên chuẩn, số lượng, list tên SP, lỗi
-            id_th, ten_th, count, products, err = count_product_by_thuonghieu(cursor, brand_input)
+            id_th, ten_th, count, products, err = count_product_by_thuonghieu(cursor, brand_input, type_context, id_loai_context)
 
             # 3. Xử lý khi không tìm thấy hãng hoặc có lỗi
             if err:
@@ -674,7 +740,7 @@ class ActionShowBrandByType(Action):
             return []
 
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor(dictionary=True, buffered=True)
 
             # 1. Lấy thông tin loại sản phẩm từ thực thể hoặc Slot
             type_input = next(tracker.get_latest_entity_values("loai_san_pham"), None)
@@ -697,7 +763,8 @@ class ActionShowBrandByType(Action):
                 return [SlotSet("loai_san_pham", None)]
 
             if count == 0:
-                dispatcher.utter_message(text=f"Hiện tại shop chưa có hãng nào cho dòng **{ten_loai}**.")
+                buttons = [create_button("📦 Xem Shop", "ask_browse_shop", {})]
+                dispatcher.utter_message(text=f"Hiện tại shop chưa có hãng nào cho dòng **{ten_loai}**.", buttons=buttons)
                 return [SlotSet("loai_san_pham", ten_loai)]
 
             # 4. Xây dựng tin nhắn phản hồi
@@ -706,11 +773,14 @@ class ActionShowBrandByType(Action):
             # 5. Tạo danh sách nút bấm hãng bằng helper create_button
             buttons = []
             for b_name in brands:
-                # Mỗi nút dẫn tới ActionShowProductByBrand
                 buttons.append(create_button(
                     title=f"🏢 {b_name}",
                     intent="ask_show_product_by_brand",
-                    entities_dict={"product_thuonghieu": b_name}
+                    # QUAN TRỌNG: Truyền cả hãng VÀ loại sản phẩm để tránh nhầm lẫn
+                    entities_dict={
+                        "product_thuonghieu": b_name,
+                        "loai_san_pham": ten_loai 
+                    }
                 ))
 
             dispatcher.utter_message(text=msg, buttons=buttons[:10])
@@ -746,11 +816,11 @@ class ActionBrowseShop(Action):
 
             # 1. Thống kê nhanh dữ liệu kho hàng
             # Lấy tổng số biến thể (SKU) đang kinh doanh
-            cursor.execute("SELECT COUNT(*) as total FROM BIENTHESP")
+            cursor.execute("SELECT COUNT(id_bienthe) as total FROM v_BIENTHESP")
             total_count = cursor.fetchone()['total']
 
             # 2. Lấy danh sách danh mục (Category)
-            cursor.execute("SELECT id_loai, ten_loai FROM DANHMUC")
+            cursor.execute("SELECT DISTINCT id_loai, ten_loai FROM v_DANHMUC")
             categories = cursor.fetchall()
             total_types = len(categories)
 
@@ -946,9 +1016,8 @@ class ActionSearchSimilarProducts(Action):
             # 1. Lấy SKU từ Slot (SKU mà khách đang xem hoặc vừa hỏi)
             current_sku = tracker.get_slot("product_bienthe")
             
-            if not current_sku:
-                # Nếu slot trống, thử lấy từ thực thể cuối cùng người dùng nhắc tới
-                current_sku = next(tracker.get_latest_entity_values("product_bienthe"), None)
+            if isinstance(current_sku, list):
+                current_sku = current_sku[0] if current_sku else None
 
             if not current_sku:
                 dispatcher.utter_message(text="Bạn muốn tìm sản phẩm tương tự với mẫu nào ạ? Hãy cho mình xin mã SKU nhé.")

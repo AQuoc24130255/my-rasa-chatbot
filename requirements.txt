@@ -1,0 +1,6 @@
+rasa
+rasa-sdk
+mysql-connector-python
+python-dotenv
+unidecode
+thefuzz[speedup]

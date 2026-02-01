@@ -334,6 +334,8 @@ nlu:
     - đối chiếu thông số [DELL-01](product_bienthe) và [ASUS-02](product_bienthe)
     - mình đang phân vân [MSI-G63](product_bienthe) và [ACER-N5](product_bienthe)
     - so sánh cấu hình 2 mã [GPRO-01](product_bienthe) và [GPRO-02](product_bienthe)
+    - so sánh [intel-core-i9-13900k-1](product_bienthe) và [intel-core-i7-13700k-3](product_bienthe)
+    - [intel-core-i9-13900k-1](product_bienthe) với [intel-core-i7-13700k-3](product_bienthe) cái nào mạnh hơn
 
 - intent: ask_search_similar_products
   examples: |

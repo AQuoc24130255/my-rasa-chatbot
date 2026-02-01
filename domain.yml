@@ -47,7 +47,7 @@ slots:
       - type: from_entity
         entity: product_thuonghieu
   product_bienthe:
-    type: text
+    type: list
     influence_conversation: true
     mappings:
       - type: from_entity
