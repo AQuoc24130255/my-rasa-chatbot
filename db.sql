@@ -3869,12 +3869,6 @@ INSERT INTO store_review VALUES(3565,'dat','tốt',5,'neutral',0.0,'2025-12-16 
 INSERT INTO store_review VALUES(3566,'dat','Đúng như mô tả, tốc độ nhanh, nhiệt độ thấp. Rất đáng tiền.',5,'neutral',0.0,'2025-12-16 07:27:06.089368',60,NULL);
 INSERT INTO store_review VALUES(3567,'dat dat','Sản phẩm rất tốt, hoạt động ổn định. Tôi hài lòng với chất lượng.',4,'positive',0.299999999999999988,'2025-12-16 07:29:17.711238',120,6);
 CREATE TABLE IF NOT EXISTS "store_userprofile" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "phone" varchar(20) NOT NULL, "address" text NOT NULL, "avatar" varchar(100) NULL, "date_of_birth" date NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "user_id" integer NOT NULL UNIQUE REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
-INSERT INTO store_userprofile VALUES(1,'','','','1979-05-24','2025-12-16 06:59:47.556098','2025-12-16 06:59:48.255884',1);
-INSERT INTO store_userprofile VALUES(2,'0912345678','123 Nguyễn Văn Linh, Quận 7, TP.HCM','','1972-09-05','2025-12-16 06:59:48.259867','2025-12-16 06:59:48.943158',2);
-INSERT INTO store_userprofile VALUES(3,'0923456789','456 Lê Văn Việt, Quận 9, TP.HCM','','1975-07-09','2025-12-16 06:59:48.946430','2025-12-16 06:59:49.640297',3);
-INSERT INTO store_userprofile VALUES(4,'0934567890','789 Nguyễn Thị Minh Khai, Quận 1, TP.HCM','','2006-03-24','2025-12-16 06:59:49.643687','2025-12-16 06:59:50.327682',4);
-INSERT INTO store_userprofile VALUES(5,'0945678901','321 Cách Mạng Tháng 8, Quận 3, TP.HCM','','1965-06-27','2025-12-16 06:59:50.331048','2025-12-16 06:59:51.026463',5);
-INSERT INTO store_userprofile VALUES(6,'12313123123','','',NULL,'2025-12-16 07:28:43.476274','2025-12-16 07:28:55.268155',6);
 CREATE UNIQUE INDEX "auth_group_permissions_group_id_permission_id_0cd325b0_uniq" ON "auth_group_permissions" ("group_id", "permission_id");
 CREATE INDEX "auth_group_permissions_group_id_b120cbf9" ON "auth_group_permissions" ("group_id");
 CREATE INDEX "auth_group_permissions_permission_id_84c5c92e" ON "auth_group_permissions" ("permission_id");
@@ -3883,7 +3877,13 @@ CREATE INDEX "auth_user_groups_user_id_6a12ed8b" ON "auth_user_groups" ("user_id
 CREATE INDEX "auth_user_groups_group_id_97559544" ON "auth_user_groups" ("group_id");
 CREATE UNIQUE INDEX "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq" ON "auth_user_user_permissions" ("user_id", "permission_id");
 CREATE INDEX "auth_user_user_permissions_user_id_a95ead1b" ON "auth_user_user_permissions" ("user_id");
-CREATE INDEX "auth_user_user_permissions_permission_id_1fbb5f2c" ON "auth_user_user_permissions" ("permission_id");
+CREATE INDEX "auth_user_userINSERT INTO store_userprofile VALUES(1,'','','','1979-05-24','2025-12-16 06:59:47.556098','2025-12-16 06:59:48.255884',1);
+INSERT INTO store_userprofile VALUES(2,'0912345678','123 Nguyễn Văn Linh, Quận 7, TP.HCM','','1972-09-05','2025-12-16 06:59:48.259867','2025-12-16 06:59:48.943158',2);
+INSERT INTO store_userprofile VALUES(3,'0923456789','456 Lê Văn Việt, Quận 9, TP.HCM','','1975-07-09','2025-12-16 06:59:48.946430','2025-12-16 06:59:49.640297',3);
+INSERT INTO store_userprofile VALUES(4,'0934567890','789 Nguyễn Thị Minh Khai, Quận 1, TP.HCM','','2006-03-24','2025-12-16 06:59:49.643687','2025-12-16 06:59:50.327682',4);
+INSERT INTO store_userprofile VALUES(5,'0945678901','321 Cách Mạng Tháng 8, Quận 3, TP.HCM','','1965-06-27','2025-12-16 06:59:50.331048','2025-12-16 06:59:51.026463',5);
+INSERT INTO store_userprofile VALUES(6,'12313123123','','',NULL,'2025-12-16 07:28:43.476274','2025-12-16 07:28:55.268155',6);
+_permissions_permission_id_1fbb5f2c" ON "auth_user_user_permissions" ("permission_id");
 CREATE INDEX "django_admin_log_content_type_id_c4bce8eb" ON "django_admin_log" ("content_type_id");
 CREATE INDEX "django_admin_log_user_id_c564eba6" ON "django_admin_log" ("user_id");
 CREATE UNIQUE INDEX "django_content_type_app_label_model_76bd3d3b_uniq" ON "django_content_type" ("app_label", "model");

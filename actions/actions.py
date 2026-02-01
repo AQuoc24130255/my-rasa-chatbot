@@ -454,8 +454,8 @@ class ActionGetProductPriceSpecs(Action):
 
                 dispatcher.utter_message(text=message, buttons=buttons)
             
-            # Vẫn nên lưu lại tên sản phẩm vào slot để giữ ngữ cảnh dòng máy
-            return [SlotSet("product_name", sku_standard)]
+                # Vẫn nên lưu lại tên sản phẩm vào slot để giữ ngữ cảnh dòng máy
+                return [SlotSet("product_name", sku_standard)]
 
             # 3. Truy vấn thông tin chi tiết từ VIEW dựa trên id_bienthe
             query = "SELECT * FROM view_chi_tiet_san_pham WHERE id_bienthe = %s"
